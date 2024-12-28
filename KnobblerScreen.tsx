@@ -12,7 +12,7 @@ function SendSliderValue(idx, val, oscData, setOscData) {
     [address]: val
   })
   sendOscMessage(address, [val])
-  //console.log("val: ", val, idx);
+  console.log("val: ", val, idx);
 }
 
 function KnobblerScreen() {
@@ -22,19 +22,19 @@ function KnobblerScreen() {
   const cols = 8
 
   const sliders = []
-  for (let row = 1; row <= rows; row++) {
-    const topPct = (20 + (80 / rows) * (row - 1)) + "%"
-    for (let col = 1; col <= cols; col++) {
-      const leftPct = (5 + ((90 / cols) * (col - 1))) + "%"
-      const idx = col + (cols * (row - 1))
+  for (let row = 0; row < rows; row++) {
+    const topPct = (20 + (80 / rows) * row) + "%"
+    for (let col = 0; col < cols; col++) {
+      const leftPct = (5 + ((90 / cols) * col)) + "%"
+      const idx = 1 + (col + (cols * (row)))
       sliders.push(
         <View
-          key={row + ":" + col}
+          key={idx}
           style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue, transform: [{ rotate: "-90deg" }] }}
         >
           <Slider
             style={{ width: 200 }}
-            value={oscData["/val" + col]}
+            value={oscData["/val" + idx]}
             minimumValue={0}
             maximumValue={1}
             minimumTrackTintColor="#FC3"

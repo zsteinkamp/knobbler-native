@@ -4,7 +4,7 @@ import { useAppContext } from './AppContext'
 import osc from 'expo-osc';
 import { NativeEventEmitter } from 'react-native';
 
-const ServerPort = 2347;
+const ListenPort = 2347;
 const PeerHost = "10.1.2.16";
 const PeerPort = 2346;
 
@@ -24,23 +24,28 @@ function OscHandler({ children }) {
 
   useEffect(() => {
     osc.createClient(PeerHost, PeerPort);
-    osc.createServer(ServerPort);
+    osc.createServer(ListenPort);
 
     // create an event emitter sending the native osc module as parameter 
     // thank u https://bobbyhadz.com/blog/react-functional-component-add-event-listener
     const eventEmitter = new NativeEventEmitter(osc);
 
     const handleMessage = (oscMessage) => {
+      if (!oscMessage.address.match(/^\/val\d$/)) {
+        return
+      }
+
       setOscData({
         ...oscData,
         [oscMessage.address]: oscMessage.data[0]
       })
-      console.log("zmessage: ", oscMessage);
+      //console.log("zmessage: ", oscMessage);
     };
 
     const listener = eventEmitter.addListener('GotMessage', (oscMessage) => handleMessage(oscMessage));
 
     return () => {
+      console.log('REMOVE LISTENER')
       listener.remove()
     }
   }, [oscData, setOscData]);
