@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppContext } from './AppContext'
 
 import osc from 'expo-osc';
@@ -9,7 +9,6 @@ const PeerHost = "10.1.2.16";
 const PeerPort = 2346;
 
 osc.createClient(PeerHost, PeerPort);
-osc.createServer(ListenPort);
 
 export function sendMsgs() {
   osc.sendMessage("/address/", ["foobar", 0.5]);
@@ -26,10 +25,13 @@ export function sendOscMessage(address: string, data: OscMessageData) {
 
 const eventEmitter = new NativeEventEmitter(osc);
 const pendingMessages = []
-let listener = null
 
 function OscHandler({ children }) {
   const { oscData, setOscData } = useAppContext()
+  const [listener, setListener] = useState(null)
+  const [timer, setTimer] = useState(null)
+
+  console.log("OUT HERE")
 
   const processMessages = () => {
     console.log("HERE")
@@ -49,18 +51,29 @@ function OscHandler({ children }) {
   }
 
   const handleMessage = (oscMessage: OscMessage) => {
+    console.log("HANDLE_MESSAGE", oscMessage)
     pendingMessages.push(oscMessage)
+    if (timer) {
+      timer.cancel()
+    }
+    setTimer(setTimeout(processMessages))
   }
-  if (!listener) {
-    listener = eventEmitter.addListener('GotMessage', (oscMessage) => handleMessage(oscMessage));
+
+  const _subscribe = () => {
+    console.log("SUBSCRIBE")
+    osc.createServer(ListenPort);
+    setListener(eventEmitter.addListener('GotMessage', (oscMessage) => handleMessage(oscMessage)))
+  }
+  const _unsubscribe = () => {
+    console.log("UNSUBSCRIBE")
+    listener && listener.remove();
+    setListener(null);
   }
 
   useEffect(() => {
-    return () => {
-      processMessages()
-      //listener.remove()
-    }
-  });
+    _subscribe();
+    return () => _unsubscribe();
+  }, []);
 
   return (<>{children}</>)
 }
