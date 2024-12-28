@@ -3,28 +3,27 @@ import { useAppContext } from "./AppContext";
 import { sendOscMessage } from "./OscHandler";
 import { DimensionValue, Text, View } from 'react-native';
 import Slider from "@react-native-community/slider";
+// https://www.npmjs.com/package/@react-native-community/slider
 
 const DOUBLE_TAP_INTERVAL = 500
 
+const touchTimes = {}
+
 function KnobblerScreen() {
   const { oscData } = useAppContext()
-
-
-  const touchTimes = {}
 
   // TODO this doesn't work to update the slider val all the time
   function handleTouch(idx: number) {
     console.log('HANDLE TOUCH', idx)
     const now = (new Date()).getTime()
     if (!touchTimes[idx]) {
-      touchTimes[idx] = now
-      return
-    }
-    if (now - touchTimes[idx] < DOUBLE_TAP_INTERVAL) {
+      console.log('EARLY EXIT', idx, touchTimes[idx], now)
+    } else if ((now - touchTimes[idx]) < DOUBLE_TAP_INTERVAL) {
+      console.log('TRY IT', idx, (now - touchTimes[idx]))
       console.log('DEFAULT', idx)
       sendOscMessage("/defaultval" + idx, [])
     }
-    touchTimes[idx] = null
+    touchTimes[idx] = now
   }
 
   function sendSliderValue(idx: number, val: number) {
@@ -49,7 +48,7 @@ function KnobblerScreen() {
           style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue }}
         >
           <Text style={{ position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}
-            onPress={() => handleTouch(idx)}>
+          >
             {oscData["/valStr" + idx]}
           </Text>
           <View
@@ -60,6 +59,7 @@ function KnobblerScreen() {
               style={{ width: 200 }}
               value={oscData["/val" + idx]}
               minimumValue={0}
+              onTouchEnd={() => handleTouch(idx)}
               maximumValue={1}
               minimumTrackTintColor={trackColor}
               maximumTrackTintColor="#000000"
