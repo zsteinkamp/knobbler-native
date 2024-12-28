@@ -8,6 +8,9 @@ const ListenPort = 2347;
 const PeerHost = "10.1.2.16";
 const PeerPort = 2346;
 
+osc.createClient(PeerHost, PeerPort);
+osc.createServer(ListenPort);
+
 export function sendMsgs() {
   osc.sendMessage("/address/", ["foobar", 0.5]);
   osc.sendMessage("/address/", ["string value", 1, false, 0.5]);
@@ -21,10 +24,12 @@ export function sendOscMessage(address: string, data: OscMessageData) {
   osc.sendMessage(address, data)
 }
 
-function OscHandler({ children }) {
-  const { oscData, setOscData, renderFlag, setRenderFlag } = useAppContext()
+const eventEmitter = new NativeEventEmitter(osc);
+const pendingMessages = []
+let listener = null
 
-  const pendingMessages = []
+function OscHandler({ children }) {
+  const { oscData, setOscData } = useAppContext()
 
   const processMessages = () => {
     console.log("HERE")
@@ -43,24 +48,17 @@ function OscHandler({ children }) {
     setOscData(newData)
   }
 
+  const handleMessage = (oscMessage: OscMessage) => {
+    pendingMessages.push(oscMessage)
+  }
+  if (!listener) {
+    listener = eventEmitter.addListener('GotMessage', (oscMessage) => handleMessage(oscMessage));
+  }
+
   useEffect(() => {
-    osc.createClient(PeerHost, PeerPort);
-    osc.createServer(ListenPort);
-
-    // create an event emitter sending the native osc module as parameter 
-    // thank u https://bobbyhadz.com/blog/react-functional-component-add-event-listener
-    const eventEmitter = new NativeEventEmitter(osc);
-
-    const handleMessage = (oscMessage: OscMessage) => {
-      pendingMessages.push(oscMessage)
-      setRenderFlag(!renderFlag)
-    }
-
-    const listener = eventEmitter.addListener('GotMessage', (oscMessage) => handleMessage(oscMessage));
-
     return () => {
       processMessages()
-      listener.remove()
+      //listener.remove()
     }
   });
 

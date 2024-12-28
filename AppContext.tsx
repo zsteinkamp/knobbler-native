@@ -4,10 +4,9 @@ const AppContext = createContext(null)
 
 function AppContextProvider({ children }) {
   const [oscData, setOscData] = useState({})
-  const [renderFlag, setRenderFlag] = useState(false)
 
   return (
-    <AppContext.Provider value={{ oscData, setOscData, renderFlag, setRenderFlag }}>
+    <AppContext.Provider value={{ oscData, setOscData }}>
       {children}
     </AppContext.Provider>
   );
