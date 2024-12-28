@@ -1,51 +1,56 @@
 import React from "react";
 import { useAppContext } from "./AppContext";
 import { sendMsgs, sendOscMessage } from "./OscHandler";
-import { Text, View } from 'react-native';
+import { DimensionValue, Text, View } from 'react-native';
 import Slider from "@react-native-community/slider";
-import { Button } from '@react-navigation/elements';
 
 function SendSliderValue(idx, val, oscData, setOscData) {
-  const address = "/fader" + idx
+  const address = "/val" + idx
 
   setOscData({
     ...oscData,
     [address]: val
   })
   sendOscMessage(address, [val])
-  console.log("val: ", val, idx);
+  //console.log("val: ", val, idx);
 }
 
 function KnobblerScreen() {
   const { oscData, setOscData } = useAppContext()
 
-  const sliders = []
-  for (let i = 1; i <= 8; i++) {
-    sliders.push(
-      <Slider
-        key={i}
-        style={{ width: 200 }}
-        value={oscData["/fader" + i]}
-        minimumValue={0}
-        maximumValue={1}
-        minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#000000"
-        thumbTintColor="#fc3"
-        onValueChange={(val) => { return SendSliderValue(i, val, oscData, setOscData) }}
-        tapToSeek={true}
-      />
-    )
-  }
+  const rows = 2
+  const cols = 8
 
-  //    <View style={{ transform: [{ rotate: "-90deg" }] }}>
+  const sliders = []
+  for (let row = 1; row <= rows; row++) {
+    const topPct = (20 + (80 / rows) * (row - 1)) + "%"
+    for (let col = 1; col <= cols; col++) {
+      const leftPct = (5 + ((90 / cols) * (col - 1))) + "%"
+      const idx = col + (cols * (row - 1))
+      sliders.push(
+        <View
+          key={row + ":" + col}
+          style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue, transform: [{ rotate: "-90deg" }] }}
+        >
+          <Slider
+            style={{ width: 200 }}
+            value={oscData["/val" + col]}
+            minimumValue={0}
+            maximumValue={1}
+            minimumTrackTintColor="#FC3"
+            maximumTrackTintColor="#000000"
+            thumbTintColor="#fc3"
+            onValueChange={(val) => { return SendSliderValue(idx, val, oscData, setOscData) }}
+            tapToSeek={true}
+          />
+        </View>
+      )
+    }
+  }
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Knobbler Screen</Text>
-      <Button onPress={sendMsgs}>Send Messages</Button>
-      <View style={{ transform: [{ rotate: "-90deg" }] }}>
-        {sliders}
-      </View>
+      {sliders}
     </View>
   );
 }
