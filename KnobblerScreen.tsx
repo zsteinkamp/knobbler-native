@@ -27,26 +27,44 @@ function KnobblerScreen() {
     for (let col = 0; col < cols; col++) {
       const leftPct = (5 + ((90 / cols) * col)) + "%"
       const idx = 1 + (col + (cols * (row)))
+      const trackColor = "#" + ((oscData["/val" + idx + "color"]) || "fc3")
       sliders.push(
         <View
           key={idx}
-          style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue, transform: [{ rotate: "-90deg" }] }}
+          style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue }}
         >
-          <Slider
-            style={{ width: 200 }}
-            value={oscData["/val" + idx]}
-            minimumValue={0}
-            maximumValue={1}
-            minimumTrackTintColor="#FC3"
-            maximumTrackTintColor="#000000"
-            thumbTintColor="#fc3"
-            onValueChange={(val) => { return SendSliderValue(idx, val, oscData, setOscData) }}
-            tapToSeek={true}
-          />
+          <Text style={{ position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}>{oscData["/valStr" + idx]}</Text>
+          <View
+            key={idx}
+            style={{ transform: [{ rotate: "-90deg" }] }}
+          >
+            <Slider
+              style={{ width: 200 }}
+              value={oscData["/val" + idx]}
+              minimumValue={0}
+              maximumValue={1}
+              minimumTrackTintColor={trackColor}
+              maximumTrackTintColor="#000000"
+              thumbTintColor={trackColor}
+              onValueChange={(val) => { return SendSliderValue(idx, val, oscData, setOscData) }}
+              tapToSeek={true}
+            />
+          </View>
+          <Text style={{ position: "relative", top: 90, left: 0, textAlign: "center", width: 196 }}>
+            {oscData["/param" + idx]}
+          </Text>
+          <Text style={{ position: "relative", top: 100, left: 0, textAlign: "center", width: 196 }}>
+            {oscData["/device" + idx]}
+          </Text>
+          <Text style={{ position: "relative", top: 110, left: 0, textAlign: "center", width: 196 }}>
+            {oscData["/track" + idx]}
+          </Text>
         </View>
       )
     }
   }
+
+  console.log("OSC DATA", JSON.stringify(oscData))
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

@@ -14,13 +14,34 @@ export function sendMsgs() {
 }
 
 type OscMessageData = (number | string)[]
+type OscMessageAddress = string
+type OscMessage = { address: OscMessageAddress, data: OscMessageData }
 
 export function sendOscMessage(address: string, data: OscMessageData) {
   osc.sendMessage(address, data)
 }
 
 function OscHandler({ children }) {
-  const { oscData, setOscData } = useAppContext()
+  const { oscData, setOscData, renderFlag, setRenderFlag } = useAppContext()
+
+  const pendingMessages = []
+
+  const processMessages = () => {
+    console.log("HERE")
+    if (!pendingMessages.length) {
+      return
+    }
+    let oscMessage: OscMessage
+    const newData = { ...oscData }
+    while (oscMessage = pendingMessages.shift()) {
+      console.log('PROCESSING', oscMessage)
+      if (oscMessage.address.match(/^\/[bc]/)) {
+        continue
+      }
+      newData[oscMessage.address] = oscMessage.data[0]
+    }
+    setOscData(newData)
+  }
 
   useEffect(() => {
     osc.createClient(PeerHost, PeerPort);
@@ -30,25 +51,18 @@ function OscHandler({ children }) {
     // thank u https://bobbyhadz.com/blog/react-functional-component-add-event-listener
     const eventEmitter = new NativeEventEmitter(osc);
 
-    const handleMessage = (oscMessage) => {
-      if (!oscMessage.address.match(/^\/val\d$/)) {
-        return
-      }
-
-      setOscData({
-        ...oscData,
-        [oscMessage.address]: oscMessage.data[0]
-      })
-      //console.log("zmessage: ", oscMessage);
-    };
+    const handleMessage = (oscMessage: OscMessage) => {
+      pendingMessages.push(oscMessage)
+      setRenderFlag(!renderFlag)
+    }
 
     const listener = eventEmitter.addListener('GotMessage', (oscMessage) => handleMessage(oscMessage));
 
     return () => {
-      console.log('REMOVE LISTENER')
+      processMessages()
       listener.remove()
     }
-  }, [oscData, setOscData]);
+  });
 
   return (<>{children}</>)
 }
