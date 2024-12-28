@@ -1,22 +1,37 @@
 import React from "react";
 import { useAppContext } from "./AppContext";
-import { sendMsgs, sendOscMessage } from "./OscHandler";
+import { sendOscMessage } from "./OscHandler";
 import { DimensionValue, Text, View } from 'react-native';
 import Slider from "@react-native-community/slider";
 
-function SendSliderValue(idx, val, oscData, setOscData) {
-  const address = "/val" + idx
-
-  setOscData({
-    ...oscData,
-    [address]: val
-  })
-  sendOscMessage(address, [val])
-  console.log("val: ", val, idx);
-}
+const DOUBLE_TAP_INTERVAL = 500
 
 function KnobblerScreen() {
-  const { oscData, setOscData } = useAppContext()
+  const { oscData } = useAppContext()
+
+
+  const touchTimes = {}
+
+  // TODO this doesn't work to update the slider val all the time
+  function handleTouch(idx: number) {
+    console.log('HANDLE TOUCH', idx)
+    const now = (new Date()).getTime()
+    if (!touchTimes[idx]) {
+      touchTimes[idx] = now
+      return
+    }
+    if (now - touchTimes[idx] < DOUBLE_TAP_INTERVAL) {
+      console.log('DEFAULT', idx)
+      sendOscMessage("/defaultval" + idx, [])
+    }
+    touchTimes[idx] = null
+  }
+
+  function sendSliderValue(idx: number, val: number) {
+    const address = "/val" + idx
+    sendOscMessage(address, [val])
+    console.log("val: ", val, idx);
+  }
 
   const rows = 2
   const cols = 8
@@ -33,7 +48,10 @@ function KnobblerScreen() {
           key={idx}
           style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue }}
         >
-          <Text style={{ position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}>{oscData["/valStr" + idx]}</Text>
+          <Text style={{ position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}
+            onPress={() => handleTouch(idx)}>
+            {oscData["/valStr" + idx]}
+          </Text>
           <View
             key={idx}
             style={{ transform: [{ rotate: "-90deg" }] }}
@@ -46,7 +64,7 @@ function KnobblerScreen() {
               minimumTrackTintColor={trackColor}
               maximumTrackTintColor="#000000"
               thumbTintColor={trackColor}
-              onValueChange={(val) => { return SendSliderValue(idx, val, oscData, setOscData) }}
+              onValueChange={(val) => { return sendSliderValue(idx, val) }}
               tapToSeek={true}
             />
           </View>
@@ -64,7 +82,7 @@ function KnobblerScreen() {
     }
   }
 
-  console.log("OSC DATA", JSON.stringify(oscData))
+  console.log("KNOBBLER RENDER", JSON.stringify(oscData))
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

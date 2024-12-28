@@ -1,12 +1,13 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useRef, useState } from 'react';
 
 const AppContext = createContext(null)
 
 function AppContextProvider({ children }) {
   const [oscData, setOscData] = useState({})
+  const oscDataRef = useRef(oscData)
 
   return (
-    <AppContext.Provider value={{ oscData, setOscData }}>
+    <AppContext.Provider value={{ oscData, setOscData, oscDataRef }}>
       {children}
     </AppContext.Provider>
   );
