@@ -6,7 +6,7 @@ import { NativeEventEmitter } from 'react-native';
 
 const portOut = 2347;
 const portIn = 2346;
-const address = "10.1.2.16";
+const address = "10.1.2.4";
 
 export function sendMsgs() {
   osc.sendMessage("/address/", ["foobar", 0.5]);

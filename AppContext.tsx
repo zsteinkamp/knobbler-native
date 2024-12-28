@@ -22,4 +22,5 @@ function useAppContext() {
   return context;
 };
 
-export { AppContextProvider, useAppContext }
+export { useAppContext }
+export default AppContextProvider
