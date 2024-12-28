@@ -24,17 +24,20 @@ function KnobblerScreen() {
     sliders.push(
       <Slider
         key={i}
-        style={{ width: 200, height: 40 }}
+        style={{ width: 200 }}
         value={oscData["/fader" + i]}
         minimumValue={0}
         maximumValue={1}
         minimumTrackTintColor="#FFFFFF"
         maximumTrackTintColor="#000000"
+        thumbTintColor="#fc3"
         onValueChange={(val) => { return SendSliderValue(i, val, oscData, setOscData) }}
         tapToSeek={true}
       />
     )
   }
+
+  //    <View style={{ transform: [{ rotate: "-90deg" }] }}>
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
