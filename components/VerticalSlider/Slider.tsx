@@ -54,9 +54,6 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       onChange = () => { },
       onComplete = () => { },
       value: currentValue = 0,
-      showIndicator = false,
-      renderIndicatorHeight = 40,
-      renderIndicator = () => null,
       containerStyle = {},
       sliderStyle = {},
       animationConfig = { damping: 15 },
@@ -139,25 +136,12 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       };
       return style;
     }, [point.value]);
-    // indicator styles
-    const indicator = useAnimatedStyle(() => {
-      const style: ViewStyle = {};
-      if (showIndicator) {
-        let bottom = ((point.value - min) / (max - min)) * height;
-        bottom = Math.min(Math.max(bottom, 0), height - renderIndicatorHeight);
-        style.bottom = bottom;
-      }
-      return style;
-    }, [point.value]);
     return (
       <GestureDetector gesture={panGesture}>
         <View style={[baseViewStyle, containerStyle]}>
           <View style={[baseViewStyle, styles.box, sliderStyle]}>
             <Animated.View style={[styles.box, slider]} />
           </View>
-          <Animated.View style={[styles.indicator, indicator]}>
-            {renderIndicator(point.value)}
-          </Animated.View>
         </View>
       </GestureDetector>
     );
@@ -170,9 +154,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-  },
-  indicator: {
-    position: 'absolute',
   },
 });
 
