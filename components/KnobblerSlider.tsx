@@ -37,6 +37,8 @@ export default function KnobblerSlider({
     const now = (new Date()).getTime()
     if (touchTimes[idx] && (now - touchTimes[idx]) < DOUBLE_TAP_INTERVAL) {
       sendOscMessage("/defaultval" + idx, [])
+      touchTimes[idx] = null
+      return
     }
     touchTimes[idx] = now
   }
