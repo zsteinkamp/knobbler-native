@@ -18,7 +18,7 @@ function OscHandler({ children }) {
     const value = oscMessage.data[0]
 
     // simplify for now
-    if (address.match(/^\/[bcs]/)) {
+    if (address.match(/^\/[c]/)) {
       return
     }
 

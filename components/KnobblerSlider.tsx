@@ -15,13 +15,10 @@ configureReanimatedLogger({
   strict: false, // The slider makes mass warnings
 });
 
-const DOUBLE_TAP_INTERVAL = 300
 const EMPTY_STRING = '- - -'
 
-// todo just use a local for each instance
-const touchTimes = {}
-
 export default function KnobblerSlider({
+  isBlu,
   height,
   idx,
   oscData,
@@ -30,18 +27,7 @@ export default function KnobblerSlider({
   value,
   width,
 }) {
-  const { oscDataRef, setOscData, sliderRefsRef, setSliderRefs } = useAppContext()
-
-  // TODO this doesn't work to update the slider val all the time
-  function handleTouch(idx: number) {
-    const now = (new Date()).getTime()
-    if (touchTimes[idx] && (now - touchTimes[idx]) < DOUBLE_TAP_INTERVAL) {
-      sendOscMessage("/defaultval" + idx, [])
-      touchTimes[idx] = null
-      return
-    }
-    touchTimes[idx] = now
-  }
+  const { oscDataRef, setOscData, sliderRefsRef } = useAppContext()
 
   function sendSliderValue(address: string, val: number) {
     oscDataRef.current[address] = val
@@ -49,8 +35,12 @@ export default function KnobblerSlider({
     sendOscMessage(address, [val])
   }
 
-  const valAddress = "/val" + idx
-  const valStrAddress = "/valStr" + idx
+  const valAddress = (isBlu ? "/bval" : "/val") + idx
+  const valStrAddress = (isBlu ? "/bvalStr" : "/valStr") + idx
+  const defaultAddress = (isBlu ? "/bdefaultval" : "/defaultval") + idx
+  const paramAddress = (isBlu ? "/bparam" : "/param") + idx
+  const deviceAddress = "/device" + idx
+  const trackAddress = "/track" + idx
 
   const sliderRef = useRef(null)
 
@@ -66,7 +56,8 @@ export default function KnobblerSlider({
       step={0.002} // 500 steps
       minimumTrackTintColor={trackColor}
       maximumTrackTintColor={trackColor + "44"}
-      onChange={(val) => { return sendSliderValue(valAddress, val) }}
+      onChange={(val) => sendSliderValue(valAddress, val)}
+      onDoubleTap={() => sendOscMessage(defaultAddress, [])}
       useSpring={false}
     />
   )
@@ -82,19 +73,21 @@ export default function KnobblerSlider({
       >
         {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
-      <View style={{ width: "100%", padding: 10, marginHorizontal: "auto" }} onTouchEnd={() => handleTouch(idx)}>
+      <View style={{ width: "100%", padding: 10, marginHorizontal: "auto" }}>
         {slider}
       </View>
       <View style={{ width: "100%" }}>
         <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text, fontWeight: "bold" }}>
-          {oscData["/param" + idx] || EMPTY_STRING}
+          {oscData[paramAddress] || EMPTY_STRING}
         </Text>
-        <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
-          {oscData["/device" + idx] || EMPTY_STRING}
-        </Text>
-        <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
-          {oscData["/track" + idx] || EMPTY_STRING}
-        </Text>
+        {!isBlu && (
+          <>
+            <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
+              {oscData[deviceAddress] || EMPTY_STRING}
+            </Text>
+            <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
+              {oscData[trackAddress] || EMPTY_STRING}
+            </Text></>)}
       </View>
     </View>
   )
