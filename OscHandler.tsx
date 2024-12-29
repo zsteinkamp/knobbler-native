@@ -10,17 +10,25 @@ export function sendOscMessage(address: string, data: OscMessageData) {
 const eventEmitter = new NativeEventEmitter(osc);
 
 function OscHandler({ children }) {
-  const { setOscData, oscDataRef } = useAppContext()
+  const { setOscData, oscDataRef, sliderRefsRef } = useAppContext()
   const [listener, setListener] = useState(null)
 
   const handleMessage = (oscMessage: OscMessage) => {
+    const address = oscMessage.address
+    const value = oscMessage.data[0]
+
     // simplify for now
-    if (oscMessage.address.match(/^\/[bcs]/)) {
+    if (address.match(/^\/[bcs]/)) {
       return
     }
     // straight to the ref instead of setOscData() from useState
     // thx https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
-    oscDataRef.current[oscMessage.address] = oscMessage.data[0]
+    oscDataRef.current[address] = value
+
+    if (sliderRefsRef.current[address]) {
+      sliderRefsRef.current[address].current?.setValueQuietly(value)
+    }
+
     setOscData({ ...oscDataRef.current })
   }
 

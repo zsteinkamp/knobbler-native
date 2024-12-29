@@ -5,10 +5,12 @@ const AppContext = createContext(null)
 
 function AppContextProvider({ children }) {
   const [oscData, setOscData] = useState({})
+  const [sliderRefs, setSliderRefs] = useState({})
+  const sliderRefsRef = useRef(sliderRefs)
   const oscDataRef = useRef(oscData)
 
   return (
-    <AppContext.Provider value={{ oscData, setOscData, oscDataRef }}>
+    <AppContext.Provider value={{ oscData, setOscData, oscDataRef, sliderRefs, setSliderRefs, sliderRefsRef }}>
       {children}
     </AppContext.Provider>
   );

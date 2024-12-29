@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppContext } from "./AppContext";
-import KnobblerSlider from './KnobblerSlider';
+import KnobblerSlider from './components/KnobblerSlider';
 import { Text, View } from 'react-native';
 // https://www.npmjs.com/package/@react-native-community/slider
 
@@ -25,6 +25,7 @@ function KnobblerScreen({ route }) {
 
       sliders.push(
         <KnobblerSlider
+          value={oscData["/val" + idx]}
           key={idx}
           idx={idx}
           sliderWidth={100}

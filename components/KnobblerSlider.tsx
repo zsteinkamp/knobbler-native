@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import { DarkTheme } from "@react-navigation/native";
-import { sendOscMessage } from "./OscHandler";
+import { sendOscMessage } from "../OscHandler";
 import { DimensionValue, Text, View } from 'react-native';
-import RNVSlider from "rn-vertical-slider";
+import RNVSlider from "./VerticalSlider"
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from 'react-native-reanimated';
-import { useAppContext } from "./AppContext";
+import { useAppContext } from "../AppContext";
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -21,8 +21,19 @@ const EMPTY_STRING = '- - -'
 // todo just use a local for each instance
 const touchTimes = {}
 
-export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHeight, sliderWidth, trackColor, width, height }) {
-  const { oscDataRef, setOscData } = useAppContext()
+export default function KnobblerSlider({
+  height,
+  idx,
+  leftPct,
+  oscData,
+  sliderHeight,
+  sliderWidth,
+  topPct,
+  trackColor,
+  value,
+  width,
+}) {
+  const { oscDataRef, setOscData, sliderRefsRef, setSliderRefs } = useAppContext()
 
   // TODO this doesn't work to update the slider val all the time
   function handleTouch(idx: number) {
@@ -42,6 +53,27 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHe
   const valAddress = "/val" + idx
   const valStrAddress = "/valStr" + idx
 
+  const sliderRef = useRef(null)
+
+  // define the slider so we can get a ref
+  const slider = (
+    <RNVSlider
+      ref={sliderRef}
+      width={sliderWidth}
+      height={sliderHeight}
+      value={value}
+      min={0}
+      max={1}
+      step={0.002} // 500 steps
+      minimumTrackTintColor={trackColor}
+      maximumTrackTintColor={trackColor + "44"}
+      onChange={(val) => { return sendSliderValue(valAddress, val) }}
+      useSpring={false}
+    />
+  )
+
+  sliderRefsRef.current[valAddress] = sliderRef
+
   return (
     <View
       style={{ backgroundColor: trackColor + "22", position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue, width: width, height: height, padding: 10 }}
@@ -51,17 +83,7 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHe
         {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
       <View style={{ marginVertical: 10, marginHorizontal: "auto" }} onTouchEnd={() => handleTouch(idx)}>
-        <RNVSlider
-          width={sliderWidth}
-          height={sliderHeight}
-          value={oscData[valAddress]}
-          min={0}
-          max={1}
-          step={0.0025}
-          minimumTrackTintColor={trackColor}
-          maximumTrackTintColor={trackColor + "44"}
-          onChange={(val) => { return sendSliderValue(valAddress, val) }}
-        />
+        {slider}
       </View>
       <View style={{ width: "100%" }}>
         <Text style={{ textAlign: "center", color: DarkTheme.colors.text, fontWeight: "bold" }}>
