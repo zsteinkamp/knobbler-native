@@ -30,6 +30,12 @@
           <string>com.anonymous.knobbler-native</string>
         </array>
       </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+knobbler-native</string>
+        </array>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
@@ -56,8 +62,8 @@
     <string>UIStatusBarStyleDefault</string>
     <key>UISupportedInterfaceOrientations</key>
     <array>
-      <string>UIInterfaceOrientationPortrait</string>
-      <string>UIInterfaceOrientationPortraitUpsideDown</string>
+      <string>UIInterfaceOrientationLandscapeLeft</string>
+      <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UISupportedInterfaceOrientations~ipad</key>
     <array>
@@ -67,7 +73,7 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UIUserInterfaceStyle</key>
-    <string>Light</string>
+    <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
   </dict>
