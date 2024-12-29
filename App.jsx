@@ -20,7 +20,6 @@ const Navigation = createStaticNavigation(MyTabs);
 
 export default function App() {
   const theme = useColorScheme();
-  console.log('THEME', theme)
   return (
     <AppContextProvider>
       <OscHandler>

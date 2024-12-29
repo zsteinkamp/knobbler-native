@@ -13,7 +13,6 @@ const touchTimes = {}
 export default function KnobblerSlider({ idx, oscData, topPct, leftPct, trackColor }) {
   // TODO this doesn't work to update the slider val all the time
   function handleTouch(idx: number) {
-    console.log('HANDLE TOUCH', idx)
     const now = (new Date()).getTime()
     if (touchTimes[idx] && (now - touchTimes[idx]) < DOUBLE_TAP_INTERVAL) {
       sendOscMessage("/defaultval" + idx, [])
@@ -24,12 +23,10 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, trackCol
   function sendSliderValue(idx: number, val: number) {
     const address = "/val" + idx
     sendOscMessage(address, [val])
-    console.log("val: ", val, idx);
   }
 
   return (
     <View
-      key={idx}
       style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue }}
     >
       <Text style={{ color: DarkTheme.colors.text, position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}
@@ -37,7 +34,6 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, trackCol
         {oscData["/valStr" + idx] || EMPTY_STRING}
       </Text>
       <View
-        key={idx}
         style={{ transform: [{ rotate: "-90deg" }] }}
       >
         <Slider

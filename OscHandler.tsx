@@ -18,13 +18,10 @@ function OscHandler({ children }) {
   const { setOscData, oscDataRef } = useAppContext()
   const [listener, setListener] = useState(null)
 
-  console.log("OSC HANDLER TOP")
-
   const handleMessage = (oscMessage: OscMessage) => {
     if (oscMessage.address.match(/^\/[bcs]/)) {
       return
     }
-    console.log("HANDLE_MESSAGE", oscMessage)
     // straight to the ref instead of setOscData() from useState
     // thx https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
     oscDataRef.current[oscMessage.address] = oscMessage.data[0]
@@ -32,7 +29,6 @@ function OscHandler({ children }) {
   }
 
   const _subscribe = () => {
-    console.log("SUBSCRIBE")
     const ListenPort = 2347;
     const PeerHost = "10.1.2.16";
     const PeerPort = 2346;
@@ -42,7 +38,6 @@ function OscHandler({ children }) {
     setListener(eventEmitter.addListener('GotMessage', handleMessage))
   }
   const _unsubscribe = () => {
-    console.log("UNSUBSCRIBE")
     listener && listener.remove();
     setListener(null);
   }

@@ -20,6 +20,7 @@ function KnobblerScreen({ theme }) {
       const trackColor = "#" + ((oscData["/val" + idx + "color"]) || "990000").substring(0, 6)
       sliders.push(
         <KnobblerSlider
+          key={idx}
           idx={idx}
           oscData={oscData}
           topPct={topPct}
