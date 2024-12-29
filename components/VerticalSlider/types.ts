@@ -1,11 +1,11 @@
-import { StyleProp, ViewStyle } from 'react-native';
+import { DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/springUtils';
 
 export type TSliderProps = {
   min: number;
   max: number;
   step?: number;
-  width: number;
+  width: DimensionValue;
   height: number;
   borderRadius?: number;
   maximumTrackTintColor?: string;

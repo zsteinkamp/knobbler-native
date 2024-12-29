@@ -24,11 +24,8 @@ const touchTimes = {}
 export default function KnobblerSlider({
   height,
   idx,
-  leftPct,
   oscData,
   sliderHeight,
-  sliderWidth,
-  topPct,
   trackColor,
   value,
   width,
@@ -59,7 +56,7 @@ export default function KnobblerSlider({
   const slider = (
     <RNVSlider
       ref={sliderRef}
-      width={sliderWidth}
+      width={"100%" as DimensionValue}
       height={sliderHeight}
       value={value}
       min={0}
@@ -72,27 +69,28 @@ export default function KnobblerSlider({
     />
   )
 
+
   sliderRefsRef.current[valAddress] = sliderRef
 
   return (
     <View
-      style={{ backgroundColor: trackColor + "22", position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue, width: width, height: height, padding: 10 }}
+      style={{ backgroundColor: trackColor + "22", width: width, height: height, padding: 10 }}
     >
       <Text style={{ color: DarkTheme.colors.text, textAlign: "center" }}
       >
         {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
-      <View style={{ marginVertical: 10, marginHorizontal: "auto" }} onTouchEnd={() => handleTouch(idx)}>
+      <View style={{ width: "100%", padding: 10, marginHorizontal: "auto" }} onTouchEnd={() => handleTouch(idx)}>
         {slider}
       </View>
       <View style={{ width: "100%" }}>
-        <Text style={{ textAlign: "center", color: DarkTheme.colors.text, fontWeight: "bold" }}>
+        <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text, fontWeight: "bold" }}>
           {oscData["/param" + idx] || EMPTY_STRING}
         </Text>
-        <Text style={{ textAlign: "center", color: DarkTheme.colors.text }}>
+        <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
           {oscData["/device" + idx] || EMPTY_STRING}
         </Text>
-        <Text style={{ textAlign: "center", color: DarkTheme.colors.text }}>
+        <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
           {oscData["/track" + idx] || EMPTY_STRING}
         </Text>
       </View>
