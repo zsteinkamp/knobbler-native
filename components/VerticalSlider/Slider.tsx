@@ -12,7 +12,6 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from 'react-native-reanimated';
 import { TSliderProps, TSliderRef } from './types';
 
@@ -52,12 +51,9 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       minimumTrackTintColor = '#77ADE6',
       disabled = false,
       onChange = () => { },
-      onComplete = () => { },
       value: currentValue = 0,
       containerStyle = {},
       sliderStyle = {},
-      animationConfig = { damping: 15 },
-      useSpring = true,
     },
     ref
   ) => {
@@ -100,22 +96,14 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       point.value = value
       return runOnJS(onChange)(value)
     }
-    const onGestureEnd = (
-      event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
-    ) => {
-      if (disabledProp.value) return;
-      return runOnJS(onComplete)(currentValue)
-    }
     const panGesture = Gesture.Pan()
       .onBegin(onGestureStart)
       .onChange(onGestureChange)
-      .onEnd(onGestureEnd)
-      .onFinalize(onGestureEnd)
       .runOnJS(true);
 
     // Ref methods
     const setValueQuietly = (value: number) => {
-      point.value = useSpring ? withSpring(value, animationConfig) : value;
+      point.value = value;
     }
     React.useImperativeHandle(ref, () => ({
       setValueQuietly,

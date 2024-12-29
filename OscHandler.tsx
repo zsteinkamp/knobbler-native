@@ -17,12 +17,13 @@ function OscHandler({ children }) {
     const address = oscMessage.address
     const value = oscMessage.data[0]
 
-    //console.log('GOT', oscMessage)
-
     // simplify for now
     if (address.match(/^\/[bcs]/)) {
       return
     }
+
+    //console.log('GOT', oscMessage)
+
     // straight to the ref instead of setOscData() from useState
     // thx https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
     oscDataRef.current[address] = value
