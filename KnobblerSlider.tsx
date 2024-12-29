@@ -10,7 +10,7 @@ const EMPTY_STRING = '- - -'
 // todo just use a local for each instance
 const touchTimes = {}
 
-export default function KnobblerSlider({ idx, oscData, topPct, leftPct, trackColor }) {
+export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHeight, trackColor, width, height }) {
   // TODO this doesn't work to update the slider val all the time
   function handleTouch(idx: number) {
     const now = (new Date()).getTime()
@@ -27,17 +27,22 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, trackCol
 
   return (
     <View
-      style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue }}
+      style={{ backgroundColor: trackColor + "22", position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue, width: width, height: height, padding: 10 }}
     >
-      <Text style={{ color: DarkTheme.colors.text, position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}
+      <Text style={{ color: DarkTheme.colors.text, textAlign: "center" }}
       >
         {oscData["/valStr" + idx] || EMPTY_STRING}
       </Text>
-      <View
-        style={{ transform: [{ rotate: "-90deg" }] }}
-      >
+      <View style={{ height: 285 }}>
         <Slider
-          style={{ width: 200 }}
+          style={{
+            width: sliderHeight,
+            transform: [
+              { translateX: -70 },
+              { translateY: 120 },
+              { rotate: "-90deg" },
+            ]
+          }}
           value={oscData["/val" + idx]}
           minimumValue={0}
           onTouchEnd={() => handleTouch(idx)}
@@ -49,15 +54,17 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, trackCol
           tapToSeek={true}
         />
       </View>
-      <Text style={{ color: DarkTheme.colors.text, position: "relative", top: 90, left: 0, textAlign: "center", width: 196 }}>
-        {oscData["/param" + idx] || EMPTY_STRING}
-      </Text>
-      <Text style={{ color: DarkTheme.colors.text, position: "relative", top: 100, left: 0, textAlign: "center", width: 196 }}>
-        {oscData["/device" + idx] || EMPTY_STRING}
-      </Text>
-      <Text style={{ color: DarkTheme.colors.text, position: "relative", top: 110, left: 0, textAlign: "center", width: 196 }}>
-        {oscData["/track" + idx] || EMPTY_STRING}
-      </Text>
+      <View style={{ width: "100%" }}>
+        <Text style={{ textAlign: "center", color: DarkTheme.colors.text, fontWeight: "bold" }}>
+          {oscData["/param" + idx] || EMPTY_STRING}
+        </Text>
+        <Text style={{ textAlign: "center", color: DarkTheme.colors.text }}>
+          {oscData["/device" + idx] || EMPTY_STRING}
+        </Text>
+        <Text style={{ textAlign: "center", color: DarkTheme.colors.text }}>
+          {oscData["/track" + idx] || EMPTY_STRING}
+        </Text>
+      </View>
     </View>
   )
 }

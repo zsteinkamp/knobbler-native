@@ -1,12 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppContext } from './AppContext'
-
 import osc from 'expo-osc';
 import { NativeEventEmitter } from 'react-native';
-
-type OscMessageData = (number | string)[]
-type OscMessageAddress = string
-type OscMessage = { address: OscMessageAddress, data: OscMessageData }
 
 export function sendOscMessage(address: string, data: OscMessageData) {
   osc.sendMessage(address, data)

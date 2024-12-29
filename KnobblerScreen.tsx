@@ -10,21 +10,26 @@ function KnobblerScreen({ theme }) {
 
   const rows = 2
   const cols = 8
+  const spacingPct = 12.25
+  const widthPct = 10
 
   const sliders = []
   for (let row = 0; row < rows; row++) {
-    const topPct = (20 + (80 / rows) * row) + "%"
+    const topPct = (row === 0 ? 5 : 52.5) + "%"
     for (let col = 0; col < cols; col++) {
-      const leftPct = (5 + ((90 / cols) * col)) + "%"
       const idx = 1 + (col + (cols * (row)))
+      const leftPct = (2 + (spacingPct * col)) + "%"
       const trackColor = "#" + ((oscData["/val" + idx + "color"]) || "990000").substring(0, 6)
       sliders.push(
         <KnobblerSlider
           key={idx}
           idx={idx}
+          sliderHeight={260}
           oscData={oscData}
           topPct={topPct}
           leftPct={leftPct}
+          width={widthPct + "%"}
+          height={"42.5%"}
           trackColor={trackColor}
         />
       )
