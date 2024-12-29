@@ -22,10 +22,12 @@ function KnobblerScreen({ route }) {
       const idx = startIdx + (col + (cols * (row)))
       const leftPct = (2 + (spacingPct * col)) + "%"
       const trackColor = "#" + ((oscData["/val" + idx + "color"]) || "990000").substring(0, 6)
+
       sliders.push(
         <KnobblerSlider
           key={idx}
           idx={idx}
+          sliderWidth={100}
           sliderHeight={260}
           oscData={oscData}
           topPct={topPct}

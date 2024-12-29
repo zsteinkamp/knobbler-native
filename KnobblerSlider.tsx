@@ -3,14 +3,24 @@ import { DarkTheme } from "@react-navigation/native";
 import { sendOscMessage } from "./OscHandler";
 import { DimensionValue, Text, View } from 'react-native';
 import RNVSlider from "rn-vertical-slider";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from 'react-native-reanimated';
 
-const DOUBLE_TAP_INTERVAL = 500
+// This is the default configuration
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // The slider makes mass warnings
+});
+
+const DOUBLE_TAP_INTERVAL = 300
 const EMPTY_STRING = '- - -'
 
 // todo just use a local for each instance
 const touchTimes = {}
 
-export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHeight, trackColor, width, height }) {
+export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHeight, sliderWidth, trackColor, width, height }) {
   // TODO this doesn't work to update the slider val all the time
   function handleTouch(idx: number) {
     const now = (new Date()).getTime()
@@ -33,16 +43,16 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHe
       >
         {oscData["/valStr" + idx] || EMPTY_STRING}
       </Text>
-      <View style={{ height: 285 }} onTouchEnd={() => handleTouch(idx)}>
+      <View style={{ marginVertical: 10, marginHorizontal: "auto" }} onTouchEnd={() => handleTouch(idx)}>
         <RNVSlider
-          width={40}
+          width={sliderWidth}
           height={sliderHeight}
           value={oscData["/val" + idx]}
           min={0}
           max={1}
+          step={0.001}
           minimumTrackTintColor={trackColor}
           maximumTrackTintColor={trackColor + "44"}
-          showIndicator
           onChange={(val) => { return sendSliderValue(idx, val) }}
         />
       </View>
