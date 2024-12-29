@@ -7,6 +7,7 @@ import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from 'react-native-reanimated';
+import { useAppContext } from "./AppContext";
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -21,6 +22,8 @@ const EMPTY_STRING = '- - -'
 const touchTimes = {}
 
 export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHeight, sliderWidth, trackColor, width, height }) {
+  const { oscDataRef, setOscData } = useAppContext()
+
   // TODO this doesn't work to update the slider val all the time
   function handleTouch(idx: number) {
     const now = (new Date()).getTime()
@@ -30,10 +33,14 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHe
     touchTimes[idx] = now
   }
 
-  function sendSliderValue(idx: number, val: number) {
-    const address = "/val" + idx
+  function sendSliderValue(address: string, val: number) {
+    oscDataRef.current[address] = val
+    setOscData({ ...oscDataRef.current })
     sendOscMessage(address, [val])
   }
+
+  const valAddress = "/val" + idx
+  const valStrAddress = "/valStr" + idx
 
   return (
     <View
@@ -41,19 +48,19 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHe
     >
       <Text style={{ color: DarkTheme.colors.text, textAlign: "center" }}
       >
-        {oscData["/valStr" + idx] || EMPTY_STRING}
+        {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
       <View style={{ marginVertical: 10, marginHorizontal: "auto" }} onTouchEnd={() => handleTouch(idx)}>
         <RNVSlider
           width={sliderWidth}
           height={sliderHeight}
-          value={oscData["/val" + idx]}
+          value={oscData[valAddress]}
           min={0}
           max={1}
-          step={0.001}
+          step={0.0025}
           minimumTrackTintColor={trackColor}
           maximumTrackTintColor={trackColor + "44"}
-          onChange={(val) => { return sendSliderValue(idx, val) }}
+          onChange={(val) => { return sendSliderValue(valAddress, val) }}
         />
       </View>
       <View style={{ width: "100%" }}>

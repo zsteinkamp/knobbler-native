@@ -14,6 +14,7 @@ function OscHandler({ children }) {
   const [listener, setListener] = useState(null)
 
   const handleMessage = (oscMessage: OscMessage) => {
+    // simplify for now
     if (oscMessage.address.match(/^\/[bcs]/)) {
       return
     }
