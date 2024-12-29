@@ -2,7 +2,7 @@ import React from "react";
 import { DarkTheme } from "@react-navigation/native";
 import { sendOscMessage } from "./OscHandler";
 import { DimensionValue, Text, View } from 'react-native';
-import Slider from "@react-native-community/slider";
+import RNVSlider from "rn-vertical-slider";
 
 const DOUBLE_TAP_INTERVAL = 500
 const EMPTY_STRING = '- - -'
@@ -33,25 +33,17 @@ export default function KnobblerSlider({ idx, oscData, topPct, leftPct, sliderHe
       >
         {oscData["/valStr" + idx] || EMPTY_STRING}
       </Text>
-      <View style={{ height: 285 }}>
-        <Slider
-          style={{
-            width: sliderHeight,
-            transform: [
-              { translateX: -70 },
-              { translateY: 120 },
-              { rotate: "-90deg" },
-            ]
-          }}
+      <View style={{ height: 285 }} onTouchEnd={() => handleTouch(idx)}>
+        <RNVSlider
+          width={40}
+          height={sliderHeight}
           value={oscData["/val" + idx]}
-          minimumValue={0}
-          onTouchEnd={() => handleTouch(idx)}
-          maximumValue={1}
+          min={0}
+          max={1}
           minimumTrackTintColor={trackColor}
           maximumTrackTintColor={trackColor + "44"}
-          thumbTintColor={trackColor}
-          onValueChange={(val) => { return sendSliderValue(idx, val) }}
-          tapToSeek={true}
+          showIndicator
+          onChange={(val) => { return sendSliderValue(idx, val) }}
         />
       </View>
       <View style={{ width: "100%" }}>

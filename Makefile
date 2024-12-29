@@ -9,3 +9,6 @@ help: ## Show makefile targets and their descriptions
 
 start: ## Build and start the dev server
 	npx expo run:ios --device ipad
+
+pods: ## Install pods in iOS
+	cd ios && pod install

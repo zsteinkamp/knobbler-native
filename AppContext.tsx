@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
 
+// thank u https://thelinuxcode.com/react-context-for-beginners-the-complete-guide-2023/
 const AppContext = createContext(null)
 
 function AppContextProvider({ children }) {
