@@ -8,7 +8,18 @@ import { useColorScheme } from 'react-native';
 
 const MyTabs = createBottomTabNavigator({
   screens: {
-    Knobbler: KnobblerScreen,
+    Knobbler: {
+      screen: KnobblerScreen,
+      initialParams: { 
+        page: 1
+      }
+    },
+    Knobbler2: {
+      screen: KnobblerScreen,
+      initialParams: { 
+        page: 2
+      }
+    },
     Bluhand: BluhandScreen,
     Setup: SetupScreen,
   }
