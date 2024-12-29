@@ -17,7 +17,7 @@ function KnobblerScreen({ route }) {
 
   function getSliders() {
     const sliders = []
-    for (const row of [0, 1]) {
+    for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const idx = startIdx + (col + (cols * (row)))
         const trackColor = "#" + ((oscData["/val" + idx + "color"]) || "990000").substring(0, 6)
