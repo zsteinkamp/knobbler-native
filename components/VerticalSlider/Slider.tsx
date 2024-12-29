@@ -32,11 +32,10 @@ const calculateValue = (
   const range = (max - min)
   const deltaRange = deltaProp * range
 
-
   let value = startValue + deltaRange
   value = Math.round(value / step) * step;
   value = Math.min(max, Math.max(min, value));
-  console.log("CALVCAL", { value, startValue, startPosition, currPosition, min, max, step, height })
+  //console.log("CALVCAL", { value, startValue, startPosition, currPosition, min, max, step, height })
   return value;
 };
 
@@ -83,21 +82,14 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       maximumTrackTintColor,
       width,
     ]);
-    // Gesture handler
-    const handleGesture =
-      (type: 'BEGIN' | 'CHANGE' | 'END') => (eventY: number) => {
-        if (disabledProp.value) return;
 
-        let value = calculateValue(startEventY, eventY, startValue, min, max, step, height);
-
-        point.value = useSpring ? withSpring(value, animationConfig) : value;
-        runOnJS(type === 'BEGIN' || type === 'CHANGE' ? onChange : onComplete)(
-          value
-        );
-      };
+    //
+    // GESTURE HANDLERS
+    //
     const onGestureStart = (
       event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
     ) => {
+      if (disabledProp.value) return;
       setStartEventY(event.y)
       setStartValue(currentValue)
     }
@@ -105,16 +97,25 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       event: GestureUpdateEvent<
         PanGestureHandlerEventPayload & PanGestureChangeEventPayload
       >
-    ) => handleGesture('CHANGE')(event.y);
+    ) => {
+      if (disabledProp.value) return;
+      let value = calculateValue(startEventY, event.y, startValue, min, max, step, height);
+      point.value = value
+      return runOnJS(onChange)(value)
+    }
     const onGestureEnd = (
       event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
-    ) => handleGesture('END')(event.y);
+    ) => {
+      if (disabledProp.value) return;
+      return runOnJS(onComplete)(currentValue)
+    }
     const panGesture = Gesture.Pan()
       .onBegin(onGestureStart)
       .onChange(onGestureChange)
       .onEnd(onGestureEnd)
       .onFinalize(onGestureEnd)
       .runOnJS(true);
+
     // Ref methods
     const setValueQuietly = (value: number) => {
       point.value = useSpring ? withSpring(value, animationConfig) : value;
