@@ -54,6 +54,7 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       value: currentValue = 0,
       containerStyle = {},
       sliderStyle = {},
+      onDoubleTap = () => { },
     },
     ref
   ) => {
@@ -101,6 +102,11 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       .onChange(onGestureChange)
       .runOnJS(true);
 
+    const doubleTapGesture = Gesture.Tap()
+      .numberOfTaps(2)
+      .onEnd(onDoubleTap)
+      .runOnJS(true)
+
     // Ref methods
     const setValueQuietly = (value: number) => {
       point.value = value;
@@ -125,12 +131,14 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       return style;
     }, [point.value]);
     return (
-      <GestureDetector gesture={panGesture}>
-        <View style={[baseViewStyle, containerStyle]}>
-          <View style={[baseViewStyle, styles.box, sliderStyle]}>
-            <Animated.View style={[styles.box, slider]} />
+      <GestureDetector gesture={doubleTapGesture}>
+        <GestureDetector gesture={panGesture}>
+          <View style={[baseViewStyle, containerStyle]}>
+            <View style={[baseViewStyle, styles.box, sliderStyle]}>
+              <Animated.View style={[styles.box, slider]} />
+            </View>
           </View>
-        </View>
+        </GestureDetector>
       </GestureDetector>
     );
   }
