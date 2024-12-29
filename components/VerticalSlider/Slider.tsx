@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import {
   Gesture,
@@ -17,18 +17,26 @@ import Animated, {
 import { TSliderProps, TSliderRef } from './types';
 
 const calculateValue = (
-  position: number,
+  startPosition: number,
+  currPosition: number,
+  startValue: number,
   min: number,
   max: number,
   step: number,
   height: number
 ): number => {
   'worklet';
-  let sliderPosition = height - position;
-  sliderPosition = Math.min(Math.max(sliderPosition, 0), height);
-  let value = (sliderPosition / height) * (max - min) + min;
+  const delta = startPosition - currPosition
+  const deltaProp = delta / height
+
+  const range = (max - min)
+  const deltaRange = deltaProp * range
+
+
+  let value = startValue + deltaRange
   value = Math.round(value / step) * step;
-  value = Math.min(Math.max(value, min), max);
+  value = Math.min(max, Math.max(min, value));
+  console.log("CALVCAL", { value, startValue, startPosition, currPosition, min, max, step, height })
   return value;
 };
 
@@ -59,6 +67,9 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
   ) => {
     let point = useSharedValue<number>(currentValue);
     let disabledProp = useSharedValue<boolean>(disabled);
+    const [startEventY, setStartEventY] = useState(null)
+    const [startValue, setStartValue] = useState(null)
+
     // Memoized BaseView styles
     const calculateBaseView = () => ({
       height,
@@ -76,7 +87,9 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
     const handleGesture =
       (type: 'BEGIN' | 'CHANGE' | 'END') => (eventY: number) => {
         if (disabledProp.value) return;
-        let value = calculateValue(eventY, min, max, step, height);
+
+        let value = calculateValue(startEventY, eventY, startValue, min, max, step, height);
+
         point.value = useSpring ? withSpring(value, animationConfig) : value;
         runOnJS(type === 'BEGIN' || type === 'CHANGE' ? onChange : onComplete)(
           value
@@ -84,7 +97,10 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       };
     const onGestureStart = (
       event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
-    ) => handleGesture('BEGIN')(event.y);
+    ) => {
+      setStartEventY(event.y)
+      setStartValue(currentValue)
+    }
     const onGestureChange = (
       event: GestureUpdateEvent<
         PanGestureHandlerEventPayload & PanGestureChangeEventPayload
