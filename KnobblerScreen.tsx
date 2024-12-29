@@ -1,4 +1,5 @@
 import React from "react";
+import { DarkTheme } from "@react-navigation/native";
 import { useAppContext } from "./AppContext";
 import { sendOscMessage } from "./OscHandler";
 import { DimensionValue, Text, View } from 'react-native';
@@ -6,10 +7,11 @@ import Slider from "@react-native-community/slider";
 // https://www.npmjs.com/package/@react-native-community/slider
 
 const DOUBLE_TAP_INTERVAL = 500
+const EMPTY_STRING = '- - -'
 
 const touchTimes = {}
 
-function KnobblerScreen() {
+function KnobblerScreen({ theme }) {
   const { oscData } = useAppContext()
 
   // TODO this doesn't work to update the slider val all the time
@@ -41,15 +43,15 @@ function KnobblerScreen() {
     for (let col = 0; col < cols; col++) {
       const leftPct = (5 + ((90 / cols) * col)) + "%"
       const idx = 1 + (col + (cols * (row)))
-      const trackColor = "#" + ((oscData["/val" + idx + "color"]) || "fc3")
+      const trackColor = "#" + ((oscData["/val" + idx + "color"]) || "990000").substring(0, 6)
       sliders.push(
         <View
           key={idx}
           style={{ position: "absolute", top: topPct as DimensionValue, left: leftPct as DimensionValue }}
         >
-          <Text style={{ position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}
+          <Text style={{ color: DarkTheme.colors.text, position: "relative", top: -80, left: 0, textAlign: "center", width: 196 }}
           >
-            {oscData["/valStr" + idx]}
+            {oscData["/valStr" + idx] || EMPTY_STRING}
           </Text>
           <View
             key={idx}
@@ -62,27 +64,27 @@ function KnobblerScreen() {
               onTouchEnd={() => handleTouch(idx)}
               maximumValue={1}
               minimumTrackTintColor={trackColor}
-              maximumTrackTintColor="#000000"
+              maximumTrackTintColor={trackColor + "44"}
               thumbTintColor={trackColor}
               onValueChange={(val) => { return sendSliderValue(idx, val) }}
               tapToSeek={true}
             />
           </View>
-          <Text style={{ position: "relative", top: 90, left: 0, textAlign: "center", width: 196 }}>
-            {oscData["/param" + idx]}
+          <Text style={{ color: DarkTheme.colors.text, position: "relative", top: 90, left: 0, textAlign: "center", width: 196 }}>
+            {oscData["/param" + idx] || EMPTY_STRING}
           </Text>
-          <Text style={{ position: "relative", top: 100, left: 0, textAlign: "center", width: 196 }}>
-            {oscData["/device" + idx]}
+          <Text style={{ color: DarkTheme.colors.text, position: "relative", top: 100, left: 0, textAlign: "center", width: 196 }}>
+            {oscData["/device" + idx] || EMPTY_STRING}
           </Text>
-          <Text style={{ position: "relative", top: 110, left: 0, textAlign: "center", width: 196 }}>
-            {oscData["/track" + idx]}
+          <Text style={{ color: DarkTheme.colors.text, position: "relative", top: 110, left: 0, textAlign: "center", width: 196 }}>
+            {oscData["/track" + idx] || EMPTY_STRING}
           </Text>
         </View>
       )
     }
   }
 
-  console.log("KNOBBLER RENDER", JSON.stringify(oscData))
+  console.log("KNOBBLER RENDER", DarkTheme.colors.text, JSON.stringify(oscData))
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
