@@ -33,7 +33,7 @@ function getSliders({
         value={oscData[valAddress]}
         key={idx}
         idx={idx}
-        sliderHeight={isBlu ? 250 : 290}
+        sliderHeight={isBlu ? 260 : 290}
         oscData={oscData}
         trackColor={trackColor}
       />
@@ -122,7 +122,7 @@ function BluhandScreen() {
 
   return (
     <View>
-      <View style={{ marginTop: 40, marginHorizontal: 15, gap: 20, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
+      <View style={{ marginTop: 20, marginHorizontal: 15, gap: 20, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
         {shortcuts}
       </View>
       <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 30, marginTop: 20, marginBottom: 20 }}>

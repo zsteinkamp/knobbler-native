@@ -11,7 +11,7 @@ import { DEFAULT_COLOR } from './lib/constants';
 
 const commonScreenOptions = {
   // placeholder
-  headerLeft: () => <Button color={"#" + DEFAULT_COLOR} title="init" />
+  headerLeft: () => <Button color={"#" + DEFAULT_COLOR} title="Unmap" />
 }
 
 const MyTabs = createBottomTabNavigator({
