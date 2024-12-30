@@ -7,10 +7,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import KnobblerScreen, { BluhandScreen, SetupScreen } from './KnobblerScreen'
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { DEFAULT_COLOR } from './lib/constants';
 
 const commonKnobblerOptions = {
   // placeholder
-  headerLeft: () => <Button color="#990000" title="init" />
+  headerLeft: () => <Button color={"#" + DEFAULT_COLOR} title="init" />
 }
 
 const MyTabs = createBottomTabNavigator({

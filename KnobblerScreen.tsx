@@ -16,12 +16,14 @@ function getSliders({
   row,
 }) {
   const rows = 2
+
   const cols = 8
   const startIdx = (rows * cols * ((page) - 1)) + 1
 
   const sliders = []
   for (let col = 0; col < cols; col++) {
-    const idx = startIdx + (col + (cols * (row)))
+    const idx = startIdx + col + ((row - 1) * cols)
+
     const valAddress = (isBlu ? "/bval" : "/val") + idx
     const trackColor = "#" + ((oscData[valAddress + "color"]) || DEFAULT_COLOR).substring(0, 6)
 
@@ -43,8 +45,6 @@ function getSliders({
 
 function getSliderRows({ oscData, isBlu, page = 1, isUnmapping = false }) {
   const viewStyle = {
-    alignContent: "center",
-    justifyContent: "space-evenly",
     flexDirection: "row",
   } as StyleProp<ViewStyle>
 
@@ -110,7 +110,7 @@ function BluhandScreen() {
       <View style={{ marginTop: 40, marginHorizontal: 20, gap: 40, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
         {shortcuts}
       </View>
-      <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 40, marginTop: 40, marginBottom: 20 }}>
+      <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 30, marginTop: 40, marginBottom: 20 }}>
         <Text numberOfLines={1} style={[TEXT_COMMON, { flexGrow: 1, fontSize: 24, fontWeight: "bold", marginTop: 4 }]}>
           {oscData["/bcurrDeviceName"]}
         </Text>

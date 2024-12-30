@@ -1,14 +1,13 @@
 import React, { useRef } from "react";
-import { DarkTheme } from "@react-navigation/native";
 import { sendOscMessage } from "../OscHandler";
 import { DimensionValue, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
-import RNVSlider from "./VerticalSlider"
+import VerticalSlider from "./VerticalSlider"
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from 'react-native-reanimated';
 import { useAppContext } from "../AppContext";
-import { TEXT_COMMON } from "../lib/constants";
+import { DEFAULT_COLOR, TEXT_COMMON } from "../lib/constants";
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -48,15 +47,15 @@ export default function KnobblerSlider({
   const slider = (
     <>
       <View style={{
-        backgroundColor: "#FF0000",
+        backgroundColor: "#" + DEFAULT_COLOR,
         height: isUnmapping ? sliderHeight : 0,
         alignItems: 'center',
         justifyContent: 'center',
         width: "100%"
       }} onTouchEnd={() => sendOscMessage("/unmap" + idx)}>
-        <Text style={{ color: 'white' }} ref={sliderRef}>UNMAP</Text>
+        <Text style={{ color: 'white' }}>UNMAP</Text>
       </View>
-      <RNVSlider
+      <VerticalSlider
         ref={sliderRef}
         width={"100%" as DimensionValue}
         height={isUnmapping ? 0 : sliderHeight}

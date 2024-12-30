@@ -38,7 +38,7 @@ const calculateValue = (
   return value;
 };
 
-const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
+const VerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
   (
     {
       min = 0,
@@ -129,7 +129,7 @@ const RNVerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
         height: `${heightPercentage}%`,
       };
       return style;
-    }, [point.value]);
+    }, [point.value, minimumTrackTintColor]);
     return (
       <GestureDetector gesture={doubleTapGesture}>
         <GestureDetector gesture={panGesture}>
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RNVerticalSlider;
+export default VerticalSlider;
