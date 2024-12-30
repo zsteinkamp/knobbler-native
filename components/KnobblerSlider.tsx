@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
 import { DarkTheme } from "@react-navigation/native";
 import { sendOscMessage } from "../OscHandler";
-import { DimensionValue, Text, View } from 'react-native';
+import { DimensionValue, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import RNVSlider from "./VerticalSlider"
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from 'react-native-reanimated';
 import { useAppContext } from "../AppContext";
-import { TEXT_COLOR } from "../lib/constants";
+import { TEXT_COMMON } from "../lib/constants";
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -77,26 +77,40 @@ export default function KnobblerSlider({
 
   sliderRefsRef.current[valAddress] = sliderRef
 
+  const sliderTextStyle = [
+    TEXT_COMMON, {
+      width: "100%",
+      textAlign: "center"
+    } as StyleProp<TextStyle>]
+
+  const viewStyle = {
+    backgroundColor:
+      trackColor + "33",
+    width,
+    height,
+    padding: 10
+  } as StyleProp<ViewStyle>
+
   return (
     <View
-      style={{ ...TEXT_COLOR, backgroundColor: trackColor + "22", width: width, height: height, padding: 10 }}
+      style={viewStyle}
     >
-      <Text style={{ ...TEXT_COLOR, textAlign: "center" }}>
+      <Text numberOfLines={1} style={sliderTextStyle}>
         {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
       <View style={{ width: "100%", padding: 10, marginHorizontal: "auto" }}>
         {slider}
       </View>
       <View style={{ width: "100%" }}>
-        <Text style={{ ...TEXT_COLOR, width: "100%", textAlign: "center", fontWeight: "bold" }}>
+        <Text numberOfLines={1} style={[sliderTextStyle, { fontWeight: "bold" }]}>
           {oscData[paramAddress] || EMPTY_STRING}
         </Text>
         {!isBlu && (
           <>
-            <Text style={{ ...TEXT_COLOR, width: "100%", textAlign: "center" }}>
+            <Text numberOfLines={1} style={sliderTextStyle}>
               {oscData[deviceAddress] || EMPTY_STRING}
             </Text>
-            <Text style={{ ...TEXT_COLOR, width: "100%", textAlign: "center" }}>
+            <Text numberOfLines={1} style={sliderTextStyle}>
               {oscData[trackAddress] || EMPTY_STRING}
             </Text>
           </>

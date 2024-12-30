@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useAppContext } from "./AppContext";
 import { useNavigation } from "@react-navigation/native";
 import KnobblerSlider from './components/KnobblerSlider';
-import { Button, StyleProp, Text, View, ViewStyle } from 'react-native';
+import { Button, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { sendOscMessage } from "./OscHandler";
-import { DEFAULT_COLOR, TEXT_COLOR } from "./lib/constants";
+import { DEFAULT_COLOR, TEXT_COMMON } from "./lib/constants";
 // https://www.npmjs.com/package/@react-native-community/slider
 
 
@@ -14,10 +14,11 @@ function getSliders({
   page = 1,
   isUnmapping = false,
 }) {
+
   const rows = 2
   const cols = 8
   const widthPct = 100 / cols
-  const heightPct = (isBlu ? 90 : 100) / rows
+  const heightPct = (isBlu ? 95 : 100) / rows
   const startIdx = (rows * cols * ((page) - 1)) + 1
 
   const sliders = []
@@ -107,13 +108,17 @@ function BluhandScreen() {
       <View style={{ marginTop: 40, flexShrink: 1, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
         {shortcuts}
       </View>
-      <View style={{ flexDirection: "row", paddingHorizontal: 30, paddingTop: 30 }}>
-        <Text style={{ ...TEXT_COLOR, flexGrow: 1, fontSize: 24 }}>{oscData["/bcurrDeviceName"]}</Text>
+      <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 40, marginTop: 40, marginBottom: 20 }}>
+        <Text numberOfLines={1} style={[TEXT_COMMON, { flexGrow: 1, fontSize: 24, fontWeight: "bold", marginTop: 4 }]}>
+          {oscData["/bcurrDeviceName"]}
+        </Text>
         <Button title="<< Prev Bank" onPress={() => sendOscMessage("/bbankPrev")} />
-        <Text style={{ ...TEXT_COLOR, marginTop: 10, fontSize: 16, paddingHorizontal: 20 }}>{oscData["/bTxtCurrBank"]}</Text>
+        <Text style={[TEXT_COMMON, { marginTop: 10, fontSize: 16, paddingHorizontal: 20 }]}>
+          {oscData["/bTxtCurrBank"]}
+        </Text>
         <Button title="Next Bank >>" onPress={() => sendOscMessage("/bbankNext")} />
       </View>
-      <View style={{ flexGrow: 1, borderWidth: 0, borderColor: "yellow", flex: 1, flexWrap: "wrap", alignContent: 'center', justifyContent: 'space-evenly', flexDirection: "row" }}>
+      <View style={{ borderWidth: 0, borderColor: "yellow", flex: 1, flexWrap: "wrap", flexDirection: "row" }}>
         {getSliders({ oscData, isBlu: true })}
       </View>
     </View>
