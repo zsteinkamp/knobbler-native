@@ -2,7 +2,8 @@ import React from "react";
 import { useAppContext } from "./AppContext";
 import { DarkTheme } from "@react-navigation/native";
 import KnobblerSlider from './components/KnobblerSlider';
-import { Text, View } from 'react-native';
+import { Button, StyleProp, Text, View, ViewStyle } from 'react-native';
+import { sendOscMessage } from "./OscHandler";
 // https://www.npmjs.com/package/@react-native-community/slider
 
 
@@ -10,7 +11,7 @@ function getSliders(oscData, isBlu: boolean = false, page: number = 1) {
   const rows = 2
   const cols = 8
   const widthPct = 100 / cols
-  const heightPct = (isBlu ? 80 : 100) / rows
+  const heightPct = (isBlu ? 90 : 100) / rows
   const startIdx = (rows * cols * ((page) - 1)) + 1
 
   const sliders = []
@@ -26,7 +27,7 @@ function getSliders(oscData, isBlu: boolean = false, page: number = 1) {
           value={oscData[valAddress]}
           key={idx}
           idx={idx}
-          sliderHeight={isBlu ? 280 : 320}
+          sliderHeight={isBlu ? 250 : 320}
           width={widthPct + "%"}
           height={heightPct + "%"}
           oscData={oscData}
@@ -42,10 +43,21 @@ function KnobblerScreen({ route }) {
   const { oscData } = useAppContext()
   const { page } = route.params
 
+  const styles = {
+    view: {
+      flex: 1,
+      gap: 0,
+      flexWrap: "wrap",
+      alignContent: "center",
+      justifyContent: "space-evenly",
+      flexDirection: "row"
+    } as StyleProp<ViewStyle>
+  }
+
   return (
-    <View style={{ borderWidth: 0, borderColor: "yellow", flex: 1, gap: 0, flexWrap: "wrap", alignContent: 'center', justifyContent: 'space-evenly', flexDirection: "row" }}>
+    <View style={styles.view} >
       {getSliders(oscData, false, page)}
-    </View>
+    </View >
   );
 }
 
@@ -59,22 +71,32 @@ function SetupScreen() {
 
 function BluhandScreen() {
   const { oscData } = useAppContext()
-  return (
-    <>
-      <View style={{ borderWidth: 1, borderColor: "yellow", flex: 1, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
-        <Text style={{ borderWidth: 1, borderColor: "yellow", color: DarkTheme.colors.text, height: 20 }}>One</Text>
-        <Text style={{ color: DarkTheme.colors.text, height: 20 }}>Two</Text>
-        <Text style={{ color: DarkTheme.colors.text, height: 20 }}>Three</Text>
-        <Text style={{ color: DarkTheme.colors.text, height: 20 }}>Four</Text>
-        <Text style={{ color: DarkTheme.colors.text, height: 20 }}>Five</Text>
-        <Text style={{ color: DarkTheme.colors.text, height: 20 }}>Six</Text>
-        <Text style={{ color: DarkTheme.colors.text, height: 20 }}>Seven</Text>
-        <Text style={{ color: DarkTheme.colors.text, height: 20 }}>Eight</Text>
+
+  const shortcuts = []
+  for (let idx = 1; idx <= 8; idx++) {
+    const color = "#" + (oscData['/shortcut' + idx + 'Color'] || "990000").substring(0, 6)
+    shortcuts.push(
+      <View key={idx} style={{ backgroundColor: color + "44", width: "10%" }}>
+        <Button color={color} onPress={() => console.log("CLICKED" + idx)} title={oscData['/shortcutName' + idx] || ("Shortcut " + idx)} />
       </View>
-      <View style={{ borderWidth: 0, borderColor: "yellow", flex: 1, flexWrap: "wrap", alignContent: 'center', justifyContent: 'space-evenly', flexDirection: "row" }}>
+    )
+  }
+
+  return (
+    <View style={{ flex: 1, flexDirection: "column" }}>
+      <View style={{ marginTop: 40, flexShrink: 1, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
+        {shortcuts}
+      </View>
+      <View style={{ flexDirection: "row", paddingHorizontal: 30, paddingTop: 30 }}>
+        <Text style={{ flexGrow: 1, fontSize: 24, color: DarkTheme.colors.text }}>{oscData["/bcurrDeviceName"]}</Text>
+        <Button title="<< Prev Bank" onPress={() => sendOscMessage("/bbankPrev", [])} />
+        <Text style={{ color: DarkTheme.colors.text, marginTop: 10, fontSize: 16, paddingHorizontal: 20 }}>{oscData["/bTxtCurrBank"]}</Text>
+        <Button title="Next Bank >>" onPress={() => sendOscMessage("/bbankNext", [])} />
+      </View>
+      <View style={{ flexGrow: 1, borderWidth: 0, borderColor: "yellow", flex: 1, flexWrap: "wrap", alignContent: 'center', justifyContent: 'space-evenly', flexDirection: "row" }}>
         {getSliders(oscData, true)}
       </View>
-    </>
+    </View>
   );
 }
 

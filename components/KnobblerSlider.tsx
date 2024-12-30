@@ -87,7 +87,9 @@ export default function KnobblerSlider({
             </Text>
             <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
               {oscData[trackAddress] || EMPTY_STRING}
-            </Text></>)}
+            </Text>
+          </>
+        )}
       </View>
     </View>
   )
