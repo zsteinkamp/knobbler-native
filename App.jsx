@@ -9,7 +9,7 @@ import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DEFAULT_COLOR } from './lib/constants';
 
-const commonKnobblerOptions = {
+const commonScreenOptions = {
   // placeholder
   headerLeft: () => <Button color={"#" + DEFAULT_COLOR} title="init" />
 }
@@ -19,7 +19,7 @@ const MyTabs = createBottomTabNavigator({
     Knobbler: {
       screen: KnobblerScreen,
       options: {
-        ...commonKnobblerOptions,
+        ...commonScreenOptions,
       },
       initialParams: { 
         page: 1
@@ -28,13 +28,18 @@ const MyTabs = createBottomTabNavigator({
     Knobbler2: {
       screen: KnobblerScreen,
       options: {
-        ...commonKnobblerOptions,
+        ...commonScreenOptions,
       },
       initialParams: { 
         page: 2
       }
     },
-    Bluhand: BluhandScreen,
+    Bluhand: {
+      screen: BluhandScreen,
+      options: {
+        ...commonScreenOptions,
+      }
+    },
     Setup: SetupScreen,
   }
 })

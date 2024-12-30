@@ -7,7 +7,9 @@
     "bval",
     "defaultval",
     "Knobbler",
+    "mapshortcut",
     "Pressable",
-    "Unmapping"
+    "Unmapping",
+    "unmapshortcut"
   ]
 }

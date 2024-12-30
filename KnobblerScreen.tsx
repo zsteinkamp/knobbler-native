@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { useAppContext } from "./AppContext";
 import { useNavigation } from "@react-navigation/native";
 import KnobblerSlider from './components/KnobblerSlider';
-import { Button, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Button, StyleProp, Text, View, ViewStyle } from 'react-native';
 import { sendOscMessage } from "./OscHandler";
 import { DEFAULT_COLOR, TEXT_COMMON } from "./lib/constants";
 // https://www.npmjs.com/package/@react-native-community/slider
-
 
 function getSliders({
   oscData,
@@ -94,23 +93,39 @@ function SetupScreen() {
 
 function BluhandScreen() {
   const { oscData } = useAppContext()
+  const navigation = useNavigation();
+
+  const [isUnmapping, setIsUnmapping] = useState(false)
+
+  React.useEffect(() => {
+    // Use `setOptions` to update the button that we previously specified
+    // Now the button includes an `onPress` handler to update the count
+    navigation.setOptions({
+      headerLeft: () => (
+        <Button color="#990000" onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
+      ),
+    });
+  }, [navigation]);
 
   const shortcuts = []
   for (let idx = 1; idx <= 8; idx++) {
     const color = "#" + (oscData['/shortcut' + idx + 'Color'] || DEFAULT_COLOR).substring(0, 6)
+    const title = oscData['/shortcutName' + idx] || ("Shortcut " + idx)
+    const style = { borderWidth: 1, flex: 1, backgroundColor: color + "44" } as StyleProp<ViewStyle>
+    const address = (isUnmapping ? '/unmapshortcut' : '/mapshortcut') + idx
     shortcuts.push(
-      <View key={idx} style={{ flex: 1, backgroundColor: color + "44" }}>
-        <Button color={color} onPress={() => sendOscMessage('/mapshortcut' + idx)} title={oscData['/shortcutName' + idx] || ("Shortcut " + idx)} />
+      <View key={idx} style={[style, isUnmapping ? { borderColor: "red" } : null]}>
+        <Text numberOfLines={1} style={{ color, textAlign: "center", padding: 10 }} onPress={() => sendOscMessage(address)}>{title}</Text>
       </View>
     )
   }
 
   return (
     <View>
-      <View style={{ marginTop: 40, marginHorizontal: 20, gap: 40, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
+      <View style={{ marginTop: 40, marginHorizontal: 15, gap: 20, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
         {shortcuts}
       </View>
-      <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 30, marginTop: 40, marginBottom: 20 }}>
+      <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 30, marginTop: 20, marginBottom: 20 }}>
         <Text numberOfLines={1} style={[TEXT_COMMON, { flexGrow: 1, fontSize: 24, fontWeight: "bold", marginTop: 4 }]}>
           {oscData["/bcurrDeviceName"]}
         </Text>
