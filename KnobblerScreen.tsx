@@ -77,7 +77,7 @@ function BluhandScreen() {
     const color = "#" + (oscData['/shortcut' + idx + 'Color'] || "990000").substring(0, 6)
     shortcuts.push(
       <View key={idx} style={{ backgroundColor: color + "44", width: "10%" }}>
-        <Button color={color} onPress={() => console.log("CLICKED" + idx)} title={oscData['/shortcutName' + idx] || ("Shortcut " + idx)} />
+        <Button color={color} onPress={() => sendOscMessage('/mapshortcut' + idx)} title={oscData['/shortcutName' + idx] || ("Shortcut " + idx)} />
       </View>
     )
   }
@@ -89,9 +89,9 @@ function BluhandScreen() {
       </View>
       <View style={{ flexDirection: "row", paddingHorizontal: 30, paddingTop: 30 }}>
         <Text style={{ flexGrow: 1, fontSize: 24, color: DarkTheme.colors.text }}>{oscData["/bcurrDeviceName"]}</Text>
-        <Button title="<< Prev Bank" onPress={() => sendOscMessage("/bbankPrev", [])} />
+        <Button title="<< Prev Bank" onPress={() => sendOscMessage("/bbankPrev")} />
         <Text style={{ color: DarkTheme.colors.text, marginTop: 10, fontSize: 16, paddingHorizontal: 20 }}>{oscData["/bTxtCurrBank"]}</Text>
-        <Button title="Next Bank >>" onPress={() => sendOscMessage("/bbankNext", [])} />
+        <Button title="Next Bank >>" onPress={() => sendOscMessage("/bbankNext")} />
       </View>
       <View style={{ flexGrow: 1, borderWidth: 0, borderColor: "yellow", flex: 1, flexWrap: "wrap", alignContent: 'center', justifyContent: 'space-evenly', flexDirection: "row" }}>
         {getSliders(oscData, true)}

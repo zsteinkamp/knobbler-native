@@ -3,8 +3,12 @@ import { useAppContext } from './AppContext'
 import osc from 'expo-osc';
 import { NativeEventEmitter } from 'react-native';
 
-export function sendOscMessage(address: string, data: OscMessageData) {
-  osc.sendMessage(address, data)
+export function sendOscMessage(address: string, data?: OscMessageData) {
+  if (data) {
+    osc.sendMessage(address, data)
+  } else {
+    osc.sendMessage(address)
+  }
 }
 
 const eventEmitter = new NativeEventEmitter(osc);
