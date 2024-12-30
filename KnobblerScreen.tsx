@@ -13,38 +13,51 @@ function getSliders({
   isBlu = false,
   page = 1,
   isUnmapping = false,
+  row,
 }) {
-
   const rows = 2
   const cols = 8
-  const widthPct = 100 / cols
-  const heightPct = (isBlu ? 95 : 100) / rows
   const startIdx = (rows * cols * ((page) - 1)) + 1
 
   const sliders = []
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const idx = startIdx + (col + (cols * (row)))
-      const valAddress = (isBlu ? "/bval" : "/val") + idx
-      const trackColor = "#" + ((oscData[valAddress + "color"]) || DEFAULT_COLOR).substring(0, 6)
+  for (let col = 0; col < cols; col++) {
+    const idx = startIdx + (col + (cols * (row)))
+    const valAddress = (isBlu ? "/bval" : "/val") + idx
+    const trackColor = "#" + ((oscData[valAddress + "color"]) || DEFAULT_COLOR).substring(0, 6)
 
-      sliders.push(
-        <KnobblerSlider
-          isBlu={isBlu}
-          isUnmapping={isUnmapping}
-          value={oscData[valAddress]}
-          key={idx}
-          idx={idx}
-          sliderHeight={isBlu ? 250 : 320}
-          width={widthPct + "%"}
-          height={heightPct + "%"}
-          oscData={oscData}
-          trackColor={trackColor}
-        />
-      )
-    }
+    sliders.push(
+      <KnobblerSlider
+        isBlu={isBlu}
+        isUnmapping={isUnmapping}
+        value={oscData[valAddress]}
+        key={idx}
+        idx={idx}
+        sliderHeight={isBlu ? 260 : 310}
+        oscData={oscData}
+        trackColor={trackColor}
+      />
+    )
   }
   return sliders
+}
+
+function getSliderRows({ oscData, isBlu, page = 1, isUnmapping = false }) {
+  const viewStyle = {
+    alignContent: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+  } as StyleProp<ViewStyle>
+
+  return (
+    <>
+      <View style={viewStyle}>
+        {getSliders({ oscData, isBlu, page, isUnmapping, row: 1 })}
+      </View>
+      <View style={viewStyle}>
+        {getSliders({ oscData, isBlu, page, isUnmapping, row: 2 })}
+      </View>
+    </>
+  )
 }
 
 function KnobblerScreen({ route }) {
@@ -59,27 +72,16 @@ function KnobblerScreen({ route }) {
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
       headerLeft: () => (
-        <Button onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
+        <Button color="#990000" onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),
     });
   }, [navigation]);
 
-  const styles = {
-    view: {
-      flex: 1,
-      gap: 0,
-      flexWrap: "wrap",
-      alignContent: "center",
-      justifyContent: "space-evenly",
-      flexDirection: "row"
-    } as StyleProp<ViewStyle>
-  }
-
   return (
-    <View style={styles.view} >
-      {getSliders({ oscData, isBlu: false, page, isUnmapping })}
-    </View >
-  );
+    <View style={{ marginTop: 20 }}>
+      {getSliderRows({ oscData, isBlu: false, page, isUnmapping })}
+    </View>
+  )
 }
 
 function SetupScreen() {
@@ -95,17 +97,17 @@ function BluhandScreen() {
 
   const shortcuts = []
   for (let idx = 1; idx <= 8; idx++) {
-    const color = "#" + (oscData['/shortcut' + idx + 'Color'] || "990000").substring(0, 6)
+    const color = "#" + (oscData['/shortcut' + idx + 'Color'] || DEFAULT_COLOR).substring(0, 6)
     shortcuts.push(
-      <View key={idx} style={{ backgroundColor: color + "44", width: "10%" }}>
+      <View key={idx} style={{ flex: 1, backgroundColor: color + "44" }}>
         <Button color={color} onPress={() => sendOscMessage('/mapshortcut' + idx)} title={oscData['/shortcutName' + idx] || ("Shortcut " + idx)} />
       </View>
     )
   }
 
   return (
-    <View style={{ flex: 1, flexDirection: "column" }}>
-      <View style={{ marginTop: 40, flexShrink: 1, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
+    <View>
+      <View style={{ marginTop: 40, marginHorizontal: 20, gap: 40, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
         {shortcuts}
       </View>
       <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 40, marginTop: 40, marginBottom: 20 }}>
@@ -118,9 +120,7 @@ function BluhandScreen() {
         </Text>
         <Button title="Next Bank >>" onPress={() => sendOscMessage("/bbankNext")} />
       </View>
-      <View style={{ borderWidth: 0, borderColor: "yellow", flex: 1, flexWrap: "wrap", flexDirection: "row" }}>
-        {getSliders({ oscData, isBlu: true })}
-      </View>
+      {getSliderRows({ oscData, isBlu: true })}
     </View>
   );
 }

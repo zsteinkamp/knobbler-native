@@ -10,7 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const commonKnobblerOptions = {
   // placeholder
-  headerLeft: () => <Button title="init" />
+  headerLeft: () => <Button color="#990000" title="init" />
 }
 
 const MyTabs = createBottomTabNavigator({

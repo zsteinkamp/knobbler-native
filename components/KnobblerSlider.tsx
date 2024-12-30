@@ -21,13 +21,11 @@ const EMPTY_STRING = '- - -'
 export default function KnobblerSlider({
   isBlu,
   isUnmapping,
-  height,
   idx,
   oscData,
   sliderHeight,
   trackColor,
   value,
-  width,
 }) {
   const { oscDataRef, setOscData, sliderRefsRef } = useAppContext()
 
@@ -84,11 +82,9 @@ export default function KnobblerSlider({
     } as StyleProp<TextStyle>]
 
   const viewStyle = {
-    backgroundColor:
-      trackColor + "33",
-    width,
-    height,
-    padding: 10
+    backgroundColor: trackColor + "33",
+    flex: 1,
+    padding: 10,
   } as StyleProp<ViewStyle>
 
   return (
