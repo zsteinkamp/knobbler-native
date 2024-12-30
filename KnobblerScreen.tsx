@@ -34,7 +34,7 @@ function getSliders({
         value={oscData[valAddress]}
         key={idx}
         idx={idx}
-        sliderHeight={isBlu ? 260 : 310}
+        sliderHeight={isBlu ? 260 : 300}
         oscData={oscData}
         trackColor={trackColor}
       />

@@ -83,7 +83,7 @@ export default function KnobblerSlider({
   const viewStyle = {
     backgroundColor: trackColor + "33",
     flex: 1,
-    padding: 10,
+    padding: 20,
   } as StyleProp<ViewStyle>
 
   return (
@@ -93,7 +93,7 @@ export default function KnobblerSlider({
       <Text numberOfLines={1} style={sliderTextStyle}>
         {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
-      <View style={{ width: "100%", padding: 10, marginHorizontal: "auto" }}>
+      <View style={{ width: "100%", paddingVertical: 10, marginHorizontal: "auto" }}>
         {slider}
       </View>
       <View style={{ width: "100%" }}>
@@ -105,7 +105,7 @@ export default function KnobblerSlider({
             <Text numberOfLines={1} style={sliderTextStyle}>
               {oscData[deviceAddress] || EMPTY_STRING}
             </Text>
-            <Text numberOfLines={1} style={sliderTextStyle}>
+            <Text onPress={() => sendOscMessage('/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
               {oscData[trackAddress] || EMPTY_STRING}
             </Text>
           </>
