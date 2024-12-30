@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppContext } from './AppContext'
 import osc from 'expo-osc';
 import { NativeEventEmitter } from 'react-native';

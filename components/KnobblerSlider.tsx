@@ -8,6 +8,7 @@ import {
   ReanimatedLogLevel,
 } from 'react-native-reanimated';
 import { useAppContext } from "../AppContext";
+import { TEXT_COLOR } from "../lib/constants";
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -19,6 +20,7 @@ const EMPTY_STRING = '- - -'
 
 export default function KnobblerSlider({
   isBlu,
+  isUnmapping,
   height,
   idx,
   oscData,
@@ -46,46 +48,55 @@ export default function KnobblerSlider({
 
   // define the slider so we can get a ref
   const slider = (
-    <RNVSlider
-      ref={sliderRef}
-      width={"100%" as DimensionValue}
-      height={sliderHeight}
-      value={value}
-      min={0}
-      max={1}
-      step={0.002} // 500 steps
-      minimumTrackTintColor={trackColor}
-      maximumTrackTintColor={trackColor + "44"}
-      onChange={(val) => sendSliderValue(valAddress, val)}
-      onDoubleTap={() => sendOscMessage(defaultAddress, [])}
-      useSpring={false}
-    />
+    <>
+      <View style={{
+        backgroundColor: "#FF0000",
+        height: isUnmapping ? sliderHeight : 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: "100%"
+      }} onTouchEnd={() => sendOscMessage("/unmap" + idx)}>
+        <Text style={{ color: 'white' }} ref={sliderRef}>UNMAP</Text>
+      </View>
+      <RNVSlider
+        ref={sliderRef}
+        width={"100%" as DimensionValue}
+        height={isUnmapping ? 0 : sliderHeight}
+        value={value}
+        min={0}
+        max={1}
+        step={0.002} // 500 steps
+        minimumTrackTintColor={trackColor}
+        maximumTrackTintColor={trackColor + "44"}
+        onChange={(val) => sendSliderValue(valAddress, val)}
+        onDoubleTap={() => sendOscMessage(defaultAddress, [])}
+        useSpring={false}
+      />
+    </>
   )
-
 
   sliderRefsRef.current[valAddress] = sliderRef
 
   return (
     <View
-      style={{ backgroundColor: trackColor + "22", width: width, height: height, padding: 10 }}
+      style={{ ...TEXT_COLOR, backgroundColor: trackColor + "22", width: width, height: height, padding: 10 }}
     >
-      <Text style={{ color: DarkTheme.colors.text, textAlign: "center" }}
-      >
+      <Text style={{ ...TEXT_COLOR, textAlign: "center" }}>
         {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
       <View style={{ width: "100%", padding: 10, marginHorizontal: "auto" }}>
         {slider}
       </View>
       <View style={{ width: "100%" }}>
-        <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text, fontWeight: "bold" }}>
+        <Text style={{ ...TEXT_COLOR, width: "100%", textAlign: "center", fontWeight: "bold" }}>
           {oscData[paramAddress] || EMPTY_STRING}
         </Text>
         {!isBlu && (
           <>
-            <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
+            <Text style={{ ...TEXT_COLOR, width: "100%", textAlign: "center" }}>
               {oscData[deviceAddress] || EMPTY_STRING}
             </Text>
-            <Text style={{ width: "100%", textAlign: "center", color: DarkTheme.colors.text }}>
+            <Text style={{ ...TEXT_COLOR, width: "100%", textAlign: "center" }}>
               {oscData[trackAddress] || EMPTY_STRING}
             </Text>
           </>
