@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, RefreshControl, StyleProp, Text, TextStyle, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, Text, Pressable, View } from "react-native";
 
 import Zeroconf from "react-native-zeroconf";
 import { TEXT_COMMON } from "../lib/constants";
@@ -29,7 +29,7 @@ export default function AutoDiscovery() {
     clearTimeout(timeout)
     timeout = setTimeout(() => {
       zeroconf.stop()
-    }, 5000)
+    }, 500)
   }
 
   useEffect(() => {
@@ -74,74 +74,46 @@ export default function AutoDiscovery() {
   }, [])
 
   const service = selectedService ? services[selectedService] : null;
-
-  const styles = {
-    container: {
-      flex: 1,
-      marginLeft: 10
-    },
-    closeButton: {
-      padding: 20,
-      textAlign: 'center',
-    } as StyleProp<TextStyle>,
-    json: {
-      padding: 10,
-    },
-    state: {
-    } as StyleProp<TextStyle>,
-  }
+  //console.log('SERVICE', service)
 
   const chooseService = (host: string) => {
+    //console.log('Choose', host)
     setSelectedService(host)
     setServerHost(services[host]?.host)
     setServerPort(services[host]?.port)
   }
 
-  if (service) {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => chooseService(null)}>
-          <Text style={[TEXT_COMMON, styles.closeButton]}>{'RESET'}</Text>
-        </TouchableOpacity>
-
-        <Text style={[TEXT_COMMON, styles.json]}>{JSON.stringify(service, null, 2)}</Text>
-      </View>
-    )
-  }
-
-  const renderServiceItem = ({ name }) => {
-    return (
-      <Text style={TEXT_COMMON}>{name}</Text>
-    )
-  }
-
   const renderRow = ({ item, index }) => {
+    const baseColor = "#3399CC"
+    const selectedColor = "#FFCC33"
+    const color = (item.host === serverHost && item.port === serverPort) ? selectedColor : baseColor
+
     return (
-      <TouchableOpacity key={index} onPress={() => chooseService(item.host)}>
-        {renderServiceItem(item)}
-      </TouchableOpacity>
+      <Pressable key={index} onPress={() => chooseService(item.host)}>
+        <View style={{ backgroundColor: color + "44", padding: 20, marginTop: 20, borderRadius: 10 }}>
+          <Text style={{ color: color }}>{item.name}</Text>
+        </View>
+      </Pressable>
     )
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={[TEXT_COMMON, { fontSize: 24, fontWeight: "bold" }]}>
-        Detected Knobblers
-        <Text style={[TEXT_COMMON, styles.state]}>{isScanning ? '(Scanning...)' : null}</Text>
+    <View style={{ flex: 1 }}>
+      <Text style={[TEXT_COMMON, { fontSize: 18, fontWeight: "bold" }]}>
+        Found These Knobblers
       </Text>
-
+      <Text style={[TEXT_COMMON, { marginTop: 10, opacity: 0.5 }]}>
+        Pull Down to Refresh
+      </Text>
       <FlatList
-        style={{ height: 100 }}
+        style={{}}
         data={Object.values(services)}
         renderItem={renderRow}
-        refreshControl={
-          <RefreshControl
-            refreshing={isScanning}
-            onRefresh={refreshData}
-            tintColor={DarkTheme.colors.text}
-          />
-        }
-      />
+        refreshControl={<RefreshControl
+          refreshing={isScanning}
+          onRefresh={refreshData}
+          tintColor={DarkTheme.colors.text} />} />
+
     </View>
   )
 }
