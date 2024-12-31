@@ -40,6 +40,9 @@ function BluhandScreen() {
       headerLeft: () => (
         <Button color="#990000" onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),
+      headerRight: () => (
+        <Button onPress={() => { oscSender.send("/btnRefresh") }} title="Refresh" />
+      ),
     });
   }, [navigation]);
 

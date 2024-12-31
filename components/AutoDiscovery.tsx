@@ -29,7 +29,7 @@ export default function AutoDiscovery() {
     clearTimeout(timeout)
     timeout = setTimeout(() => {
       zeroconf.stop()
-    }, 500)
+    }, 1000)
   }
 
   useEffect(() => {
@@ -84,6 +84,13 @@ export default function AutoDiscovery() {
   }
 
   const renderRow = ({ item, index }) => {
+    if (item.lastRow) {
+      return (
+        <Text style={[TEXT_COMMON, { margin: 20, opacity: 0.5 }]}>
+          Pull Down to Refresh
+        </Text>
+      )
+    }
     const baseColor = "#3399CC"
     const selectedColor = "#FFCC33"
     const color = (item.host === serverHost && item.port === serverPort) ? selectedColor : baseColor
@@ -97,17 +104,19 @@ export default function AutoDiscovery() {
     )
   }
 
+  const renderData = [...Object.values(services)]
+  renderData.push({
+    lastRow: true
+  })
+
   return (
     <View style={{ flex: 1 }}>
       <Text style={[TEXT_COMMON, { fontSize: 18, fontWeight: "bold" }]}>
         Found These Knobblers
       </Text>
-      <Text style={[TEXT_COMMON, { marginTop: 10, opacity: 0.5 }]}>
-        Pull Down to Refresh
-      </Text>
       <FlatList
         style={{}}
-        data={Object.values(services)}
+        data={renderData}
         renderItem={renderRow}
         refreshControl={<RefreshControl
           refreshing={isScanning}

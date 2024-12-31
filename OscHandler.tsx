@@ -8,11 +8,11 @@ export function OscSender(lastOscSent, setLastOscSent) {
   return {
     send: (address: string, data?: OscMessageData) => {
       const newSent = [...lastOscSent]
-      newSent.push([
+      newSent.unshift([
         address,
         (typeof (data) != "undefined") ? data[0] : null
       ].join(" "))
-      setLastOscSent(newSent.slice(-RETAIN_OSC_MSG_COUNT))
+      setLastOscSent(newSent.slice(0, RETAIN_OSC_MSG_COUNT))
 
       if (data) {
         osc.sendMessage(address, data)
@@ -50,8 +50,8 @@ function OscHandler({ children }) {
 
     // updated received msgs list
     if (lastOscReceivedRef?.current?.push) {
-      lastOscReceivedRef.current.push([address, value].join(" "))
-      setLastOscReceived(lastOscReceivedRef.current.slice(-RETAIN_OSC_MSG_COUNT))
+      lastOscReceivedRef.current.unshift([address, value].join(" "))
+      setLastOscReceived(lastOscReceivedRef.current.slice(0, RETAIN_OSC_MSG_COUNT))
     }
 
     setOscData({ ...oscDataRef.current })

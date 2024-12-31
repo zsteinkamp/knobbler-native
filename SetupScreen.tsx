@@ -3,11 +3,13 @@ import { Button, Text, View } from "react-native";
 import { useAppContext } from "./AppContext";
 import OscList from "./components/OscList";
 import AutoDiscovery from "./components/AutoDiscovery";
+import { useNavigation } from "@react-navigation/native";
 import { OscSender } from "./OscHandler";
 import { TEXT_COMMON } from "./lib/constants";
 
 export default function SetupScreen() {
   const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, serverPort } = useAppContext()
+  const navigation = useNavigation();
 
   const oscSender = OscSender(lastOscSent, setLastOscSent)
 
@@ -16,6 +18,16 @@ export default function SetupScreen() {
           <Button title="Refresh UI" onPress={() => oscSender.send('/btnRefresh')} />
         </View>
   */
+  React.useEffect(() => {
+    // Use `setOptions` to update the button that we previously specified
+    // Now the button includes an `onPress` handler to update the count
+    navigation.setOptions({
+      headerRight: () => (
+        <Button onPress={() => { oscSender.send("/btnRefresh") }} title="Refresh" />
+      ),
+    });
+  }, [navigation]);
+
 
   return (
     <View style={{ padding: 40, gap: 40, flexDirection: "row", flexGrow: 1 }}>
