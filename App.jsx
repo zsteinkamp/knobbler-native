@@ -20,6 +20,7 @@ const MyTabs = createBottomTabNavigator({
       screen: KnobblerScreen,
       options: {
         ...commonScreenOptions,
+        title: "️Knobbler ☝",
       },
       initialParams: { 
         page: 1
@@ -29,6 +30,7 @@ const MyTabs = createBottomTabNavigator({
       screen: KnobblerScreen,
       options: {
         ...commonScreenOptions,
+        title: "Knobbler ✌",
       },
       initialParams: { 
         page: 2

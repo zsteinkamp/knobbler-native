@@ -7,7 +7,7 @@ import {
   ReanimatedLogLevel,
 } from 'react-native-reanimated';
 import { useAppContext } from "../AppContext";
-import { DEFAULT_COLOR, TEXT_COMMON } from "../lib/constants";
+import { TEXT_COMMON } from "../lib/constants";
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -46,19 +46,10 @@ export default function KnobblerSlider({
   // define the slider so we can get a ref
   const slider = (
     <>
-      <View style={{
-        backgroundColor: "#" + DEFAULT_COLOR,
-        height: isUnmapping ? sliderHeight : 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: "100%"
-      }} onTouchEnd={() => sendOscMessage("/unmap" + idx)}>
-        <Text style={{ color: 'white' }}>UNMAP</Text>
-      </View>
       <VerticalSlider
         ref={sliderRef}
         width={"100%" as DimensionValue}
-        height={isUnmapping ? 0 : sliderHeight}
+        height={sliderHeight}
         value={value}
         min={0}
         max={1}
@@ -66,8 +57,10 @@ export default function KnobblerSlider({
         minimumTrackTintColor={trackColor}
         maximumTrackTintColor={trackColor + "44"}
         onChange={(val) => sendSliderValue(valAddress, val)}
-        onDoubleTap={() => sendOscMessage(defaultAddress, [])}
+        onTapNumTaps={isUnmapping ? 1 : 2}
+        onTap={isUnmapping ? () => sendOscMessage("/unmap" + idx) : () => sendOscMessage(defaultAddress, [])}
         useSpring={false}
+        containerStyle={{ borderWidth: 1, borderColor: isUnmapping && "red" }}
       />
     </>
   )
@@ -84,6 +77,7 @@ export default function KnobblerSlider({
     backgroundColor: trackColor + "33",
     flex: 1,
     padding: 20,
+    borderRadius: 10,
   } as StyleProp<ViewStyle>
 
   return (

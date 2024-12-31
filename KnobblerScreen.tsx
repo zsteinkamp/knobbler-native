@@ -1,61 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useAppContext } from "./AppContext";
 import { useNavigation } from "@react-navigation/native";
 import KnobblerSlider from './components/KnobblerSlider';
-import { Button, StyleProp, Text, View, ViewStyle } from 'react-native';
+import { Button, Dimensions, LayoutChangeEvent, StyleProp, Text, View, ViewStyle } from 'react-native';
 import { sendOscMessage } from "./OscHandler";
 import { DEFAULT_COLOR, TEXT_COMMON } from "./lib/constants";
+import SliderRow from "./components/SliderRow";
 // https://www.npmjs.com/package/@react-native-community/slider
 
-function getSliders({
-  oscData,
-  isBlu = false,
-  page = 1,
-  isUnmapping = false,
-  row,
-}) {
-  const rows = 2
+const windowDimensions = Dimensions.get('window');
+const screenDimensions = Dimensions.get('screen');
 
-  const cols = 8
-  const startIdx = (rows * cols * ((page) - 1)) + 1
-
-  const sliders = []
-  for (let col = 0; col < cols; col++) {
-    const idx = startIdx + col + ((row - 1) * cols)
-
-    const valAddress = (isBlu ? "/bval" : "/val") + idx
-    const trackColor = "#" + ((oscData[valAddress + "color"]) || DEFAULT_COLOR).substring(0, 6)
-
-    sliders.push(
-      <KnobblerSlider
-        isBlu={isBlu}
-        isUnmapping={isUnmapping}
-        value={oscData[valAddress]}
-        key={idx}
-        idx={idx}
-        sliderHeight={isBlu ? 260 : 290}
-        oscData={oscData}
-        trackColor={trackColor}
-      />
-    )
-  }
-  return sliders
-}
-
-function getSliderRows({ oscData, isBlu, page = 1, isUnmapping = false }) {
+function getSliderRows({ oscData, isBlu, page = 1, isUnmapping = false, screenH }) {
   const viewStyle = {
     flexDirection: "row",
+    gap: 10,
+    marginBottom: 10,
   } as StyleProp<ViewStyle>
-
   return (
-    <>
+    <View>
       <View style={viewStyle}>
-        {getSliders({ oscData, isBlu, page, isUnmapping, row: 1 })}
+        <SliderRow oscData={oscData} isBlu={isBlu} page={page} isUnmapping={isUnmapping} row={1} screenH={screenH} />
       </View>
       <View style={viewStyle}>
-        {getSliders({ oscData, isBlu, page, isUnmapping, row: 2 })}
+        <SliderRow oscData={oscData} isBlu={isBlu} page={page} isUnmapping={isUnmapping} row={2} screenH={screenH} />
       </View>
-    </>
+    </View>
   )
 }
 
@@ -65,6 +35,23 @@ function KnobblerScreen({ route }) {
   const { page } = route.params
 
   const [isUnmapping, setIsUnmapping] = useState(false)
+
+  const [dimensions, setDimensions] = useState({
+    window: windowDimensions,
+    screen: screenDimensions,
+  });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener(
+      'change',
+      ({ window, screen }) => {
+        setDimensions({ window, screen });
+      },
+    );
+    return () => subscription?.remove();
+  });
+
+  const ref = useRef(null);
 
   React.useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
@@ -77,8 +64,8 @@ function KnobblerScreen({ route }) {
   }, [navigation]);
 
   return (
-    <View style={{ marginTop: 20 }}>
-      {getSliderRows({ oscData, isBlu: false, page, isUnmapping })}
+    <View ref={ref} style={{ marginTop: 20 }}>
+      {getSliderRows({ oscData, isBlu: false, page, isUnmapping, screenH: dimensions.window.height })}
     </View>
   )
 }
@@ -96,6 +83,23 @@ function BluhandScreen() {
   const navigation = useNavigation();
 
   const [isUnmapping, setIsUnmapping] = useState(false)
+
+  const ref = useRef(null);
+
+  const [dimensions, setDimensions] = useState({
+    window: windowDimensions,
+    screen: screenDimensions,
+  });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener(
+      'change',
+      ({ window, screen }) => {
+        setDimensions({ window, screen });
+      },
+    );
+    return () => subscription?.remove();
+  });
 
   React.useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
@@ -115,27 +119,60 @@ function BluhandScreen() {
     const address = (isUnmapping ? '/unmapshortcut' : '/mapshortcut') + idx
     shortcuts.push(
       <View key={idx} style={[style, isUnmapping ? { borderColor: "red" } : null]}>
-        <Text numberOfLines={1} style={{ color, textAlign: "center", padding: 10 }} onPress={() => sendOscMessage(address)}>{title}</Text>
+        <Text
+          numberOfLines={1}
+          style={{
+            color,
+            textAlign: "center",
+            padding: 10,
+          }}
+          onPress={() => sendOscMessage(address)}
+        >
+          {title}
+        </Text>
       </View>
     )
   }
 
   return (
     <View>
-      <View style={{ marginTop: 20, marginHorizontal: 15, gap: 20, flexDirection: "row", alignContent: "center", justifyContent: "space-evenly" }}>
+      <View style={{
+        marginTop: 20,
+        marginHorizontal: 15,
+        gap: 20,
+        flexDirection: "row",
+        alignContent: "center",
+        justifyContent: "space-evenly"
+      }}>
         {shortcuts}
       </View>
-      <View style={{ borderWidth: 0, borderColor: 'yellow', flexDirection: "row", marginHorizontal: 30, marginTop: 20, marginBottom: 20 }}>
-        <Text numberOfLines={1} style={[TEXT_COMMON, { flexGrow: 1, fontSize: 24, fontWeight: "bold", marginTop: 4 }]}>
+      <View style={{
+        borderWidth: 0,
+        borderColor: 'yellow',
+        flexDirection: "row",
+        marginHorizontal: 30,
+        marginTop: 20,
+        marginBottom: 10
+      }}>
+        <Text numberOfLines={1} style={[TEXT_COMMON, {
+          flexGrow: 1,
+          fontSize: 24,
+          fontWeight: "bold",
+          marginTop: 4
+        }]}>
           {oscData["/bcurrDeviceName"]}
         </Text>
         <Button title="<< Prev Bank" onPress={() => sendOscMessage("/bbankPrev")} />
-        <Text style={[TEXT_COMMON, { marginTop: 10, fontSize: 16, paddingHorizontal: 20 }]}>
+        <Text style={[TEXT_COMMON, {
+          marginTop: 10,
+          fontSize: 16,
+          paddingHorizontal: 20
+        }]}>
           {oscData["/bTxtCurrBank"]}
         </Text>
         <Button title="Next Bank >>" onPress={() => sendOscMessage("/bbankNext")} />
       </View>
-      {getSliderRows({ oscData, isBlu: true })}
+      {getSliderRows({ oscData, isBlu: true, screenH: dimensions.window.height })}
     </View>
   );
 }

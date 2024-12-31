@@ -50,11 +50,12 @@ const VerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       maximumTrackTintColor = '#3F2DA5',
       minimumTrackTintColor = '#77ADE6',
       disabled = false,
-      onChange = () => { },
       value: currentValue = 0,
       containerStyle = {},
       sliderStyle = {},
-      onDoubleTap = () => { },
+      onChange = () => { },
+      onTapNumTaps = 2,
+      onTap = () => { },
     },
     ref
   ) => {
@@ -102,9 +103,9 @@ const VerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       .onChange(onGestureChange)
       .runOnJS(true);
 
-    const doubleTapGesture = Gesture.Tap()
-      .numberOfTaps(2)
-      .onEnd(onDoubleTap)
+    const tapGesture = Gesture.Tap()
+      .numberOfTaps(onTapNumTaps)
+      .onEnd(onTap)
       .runOnJS(true)
 
     // Ref methods
@@ -131,7 +132,7 @@ const VerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
       return style;
     }, [point.value, minimumTrackTintColor]);
     return (
-      <GestureDetector gesture={doubleTapGesture}>
+      <GestureDetector gesture={tapGesture}>
         <GestureDetector gesture={panGesture}>
           <View style={[baseViewStyle, containerStyle]}>
             <View style={[baseViewStyle, styles.box, sliderStyle]}>

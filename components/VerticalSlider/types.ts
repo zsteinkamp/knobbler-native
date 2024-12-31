@@ -21,7 +21,8 @@ export type TSliderProps = {
   renderIndicatorHeight?: number;
   animationConfig?: SpringConfig;
   useSpring?: boolean;
-  onDoubleTap?: () => void;
+  onTapNumTaps?: 1 | 2
+  onTap?: () => void;
 };
 
 export type TSliderRef = {
