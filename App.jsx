@@ -2,9 +2,11 @@ import React from 'react';
 import { Button } from 'react-native';
 import AppContextProvider from './AppContext'
 import OscHandler from './OscHandler';
-import { createStaticNavigation, DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createStaticNavigation, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import KnobblerScreen, { BluhandScreen, SetupScreen } from './KnobblerScreen'
+import KnobblerScreen from './KnobblerScreen'
+import BluhandScreen from './BluhandScreen'
+import SetupScreen from './SetupScreen'
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DEFAULT_COLOR } from './lib/constants';
