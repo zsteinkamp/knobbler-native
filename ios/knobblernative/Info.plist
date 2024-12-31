@@ -76,5 +76,11 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_osc._udp.</string>
+    </array>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Facilitates auto-discovery of Knobbler running in Ableton Live.</string>
   </dict>
 </plist>

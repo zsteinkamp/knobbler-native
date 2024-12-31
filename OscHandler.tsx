@@ -26,7 +26,7 @@ export function OscSender(lastOscSent, setLastOscSent) {
 const eventEmitter = new NativeEventEmitter(osc);
 
 function OscHandler({ children }) {
-  const { setOscData, oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived } = useAppContext()
+  const { setOscData, oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived, serverHost, serverPort } = useAppContext()
   const [listener, setListener] = useState(null)
 
   const handleMessage = (oscMessage: OscMessage) => {
@@ -59,10 +59,8 @@ function OscHandler({ children }) {
 
   const _subscribe = () => {
     const ListenPort = 2347;
-    const PeerHost = "10.1.2.16";
-    const PeerPort = 2346;
 
-    osc.createClient(PeerHost, PeerPort);
+    osc.createClient(serverHost, serverPort);
     osc.createServer(ListenPort);
     setListener(eventEmitter.addListener('GotMessage', handleMessage))
   }
@@ -72,9 +70,12 @@ function OscHandler({ children }) {
   }
 
   useEffect(() => {
+    if (!serverHost || !serverPort) {
+      return
+    }
     _subscribe();
     return () => _unsubscribe();
-  }, []);
+  }, [serverHost, serverPort]);
 
   return (<>{children}</>)
 }

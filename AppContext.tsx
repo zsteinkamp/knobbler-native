@@ -8,6 +8,8 @@ function AppContextProvider({ children }) {
   const [sliderRefs, setSliderRefs] = useState({})
   const [lastOscReceived, setLastOscReceived] = useState([])
   const [lastOscSent, setLastOscSent] = useState([])
+  const [serverHost, setServerHost] = useState("")
+  const [serverPort, setServerPort] = useState(2346)
 
   const sliderRefsRef = useRef(sliderRefs)
   const oscDataRef = useRef(oscData)
@@ -19,6 +21,8 @@ function AppContextProvider({ children }) {
       sliderRefs, setSliderRefs, sliderRefsRef,
       lastOscReceived, setLastOscReceived, lastOscReceivedRef,
       lastOscSent, setLastOscSent,
+      serverHost, setServerHost,
+      serverPort, setServerPort,
     }}>
       {children}
     </AppContext.Provider>
@@ -29,7 +33,7 @@ function useAppContext() {
   const context = useContext(AppContext);
 
   if (!context) {
-    throw new Error('Trying to acess MyContext out of the Provider');
+    throw new Error('Trying to access MyContext out of the Provider');
   }
 
   return context;
