@@ -5,7 +5,7 @@ import OscList from "./components/OscList";
 import AutoDiscovery from "./components/AutoDiscovery";
 import { useNavigation } from "@react-navigation/native";
 import { OscSender } from "./OscHandler";
-import { TEXT_COMMON } from "./lib/constants";
+import { TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
 
 export default function SetupScreen() {
   const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, serverPort } = useAppContext()
@@ -33,7 +33,7 @@ export default function SetupScreen() {
     <View style={{ padding: 40, gap: 40, flexDirection: "row", flexGrow: 1 }}>
       <View style={{ flex: 1, borderWidth: 0, borderColor: "white" }}>
         <View style={{ flex: 1, flexGrow: 1 }}>
-          <Text style={[TEXT_COMMON, { marginBottom: 20, fontSize: 24, fontWeight: "bold" }]}>
+          <Text style={[TEXT_HEADER, { marginBottom: 20 }]}>
             Knobbler Device Connection
           </Text>
           <View>

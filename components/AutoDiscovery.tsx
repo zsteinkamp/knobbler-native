@@ -40,30 +40,24 @@ export default function AutoDiscovery() {
       //console.log('IP ' + ip)
       zeroconf.publishService('osc', 'udp', 'local.', "Knobbler UI (" + ip + ")", 2347)
     })
-
     zeroconf.on('start', () => {
       setIsScanning(true)
       //console.log('[Start]')
     })
-
     zeroconf.on('stop', () => {
       setIsScanning(false)
       //console.log('[Stop]')
     })
-
     zeroconf.on('resolved', service => {
       if (!service.name.match(/Knobbler/) || service.name.match(/Knobbler UI/)) {
         return
       }
-
       //console.log('[Resolve]', JSON.stringify(service, null, 2))
-
       setServices({
         ...services,
         [service.host]: service,
       })
     })
-
     zeroconf.on('error', err => {
       setIsScanning(false)
       //console.log('[Error]', err)

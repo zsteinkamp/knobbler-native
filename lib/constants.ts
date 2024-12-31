@@ -8,3 +8,11 @@ export const TEXT_COMMON = {
   whiteSpace: "nowrap",
   overflow: "hidden",
 } as StyleProp<TextStyle>
+export const TEXT_HEADER = [
+  TEXT_COMMON,
+  {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#FFCC33",
+    opacity: 0.5,
+  }] as StyleProp<TextStyle>
