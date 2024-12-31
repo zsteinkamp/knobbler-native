@@ -18,6 +18,7 @@ const commonScreenOptions = {
 
 const MyTabs = createBottomTabNavigator({
   screens: {
+    Setup: SetupScreen,
     Knobbler: {
       screen: KnobblerScreen,
       options: {
@@ -44,7 +45,6 @@ const MyTabs = createBottomTabNavigator({
         ...commonScreenOptions,
       }
     },
-    Setup: SetupScreen,
   }
 })
 

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { sendOscMessage } from "../OscHandler";
+import { OscSender } from "../OscHandler";
 import { DimensionValue, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import VerticalSlider from "./VerticalSlider"
 import {
@@ -26,12 +26,14 @@ export default function KnobblerSlider({
   trackColor,
   value,
 }) {
-  const { oscDataRef, setOscData, sliderRefsRef } = useAppContext()
+  const { oscDataRef, setOscData, sliderRefsRef, lastOscSent, setLastOscSent } = useAppContext()
+
+  const oscSender = OscSender(lastOscSent, setLastOscSent)
 
   function sendSliderValue(address: string, val: number) {
     oscDataRef.current[address] = val
     setOscData({ ...oscDataRef.current })
-    sendOscMessage(address, [val])
+    oscSender.send(address, [val])
   }
 
   const valAddress = (isBlu ? "/bval" : "/val") + idx
@@ -58,7 +60,7 @@ export default function KnobblerSlider({
         maximumTrackTintColor={trackColor + "44"}
         onChange={(val) => sendSliderValue(valAddress, val)}
         onTapNumTaps={isUnmapping ? 1 : 2}
-        onTap={isUnmapping ? () => sendOscMessage("/unmap" + idx) : () => sendOscMessage(defaultAddress, [])}
+        onTap={isUnmapping ? () => oscSender.send("/unmap" + idx) : () => oscSender.send(defaultAddress, [])}
         useSpring={false}
         containerStyle={{ borderWidth: 1, borderColor: isUnmapping && "red" }}
       />
@@ -99,7 +101,7 @@ export default function KnobblerSlider({
             <Text numberOfLines={1} style={sliderTextStyle}>
               {oscData[deviceAddress] || EMPTY_STRING}
             </Text>
-            <Text onPress={() => sendOscMessage('/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
+            <Text onPress={() => oscSender.send('/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
               {oscData[trackAddress] || EMPTY_STRING}
             </Text>
           </>

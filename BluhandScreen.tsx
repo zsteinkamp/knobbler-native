@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, View, Text, Button, StyleProp, ViewStyle } from "react-native";
 import { useAppContext } from "./AppContext";
 import { useNavigation } from "@react-navigation/native";
 import { DEFAULT_COLOR, TEXT_COMMON } from "./lib/constants";
 import SliderRows from "./components/SliderRows";
-import { sendOscMessage } from "./OscHandler";
+import { OscSender } from "./OscHandler";
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -12,15 +12,16 @@ const screenDimensions = Dimensions.get('screen');
 function BluhandScreen() {
   const { oscData } = useAppContext()
   const navigation = useNavigation();
+  const { lastOscSent, setLastOscSent } = useAppContext()
 
   const [isUnmapping, setIsUnmapping] = useState(false)
-
-  const ref = useRef(null);
 
   const [dimensions, setDimensions] = useState({
     window: windowDimensions,
     screen: screenDimensions,
   });
+
+  const oscSender = OscSender(lastOscSent, setLastOscSent)
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -57,7 +58,7 @@ function BluhandScreen() {
             textAlign: "center",
             padding: 10,
           }}
-          onPress={() => sendOscMessage(address)}
+          onPress={() => oscSender.send(address)}
         >
           {title}
         </Text>
@@ -93,7 +94,7 @@ function BluhandScreen() {
         }]}>
           {oscData["/bcurrDeviceName"]}
         </Text>
-        <Button title="<< Prev Bank" onPress={() => sendOscMessage("/bbankPrev")} />
+        <Button title="<< Prev Bank" onPress={() => oscSender.send("/bbankPrev")} />
         <Text style={[TEXT_COMMON, {
           marginTop: 10,
           fontSize: 16,
@@ -101,7 +102,7 @@ function BluhandScreen() {
         }]}>
           {oscData["/bTxtCurrBank"]}
         </Text>
-        <Button title="Next Bank >>" onPress={() => sendOscMessage("/bbankNext")} />
+        <Button title="Next Bank >>" onPress={() => oscSender.send("/bbankNext")} />
       </View>
       <SliderRows oscData={oscData} isBlu={true} screenH={dimensions.window.height} />
     </View>

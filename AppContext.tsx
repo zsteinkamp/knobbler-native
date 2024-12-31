@@ -6,11 +6,20 @@ const AppContext = createContext(null)
 function AppContextProvider({ children }) {
   const [oscData, setOscData] = useState({})
   const [sliderRefs, setSliderRefs] = useState({})
+  const [lastOscReceived, setLastOscReceived] = useState([])
+  const [lastOscSent, setLastOscSent] = useState([])
+
   const sliderRefsRef = useRef(sliderRefs)
   const oscDataRef = useRef(oscData)
+  const lastOscReceivedRef = useRef(lastOscReceived)
 
   return (
-    <AppContext.Provider value={{ oscData, setOscData, oscDataRef, sliderRefs, setSliderRefs, sliderRefsRef }}>
+    <AppContext.Provider value={{
+      oscData, setOscData, oscDataRef,
+      sliderRefs, setSliderRefs, sliderRefsRef,
+      lastOscReceived, setLastOscReceived, lastOscReceivedRef,
+      lastOscSent, setLastOscSent,
+    }}>
       {children}
     </AppContext.Provider>
   );
