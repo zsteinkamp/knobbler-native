@@ -6,6 +6,7 @@ import { TEXT_COMMON } from "../lib/constants";
 
 import { NetworkInfo } from 'react-native-network-info'
 import { useAppContext } from "../AppContext";
+import { DarkTheme } from "@react-navigation/native";
 
 const zeroconf = new Zeroconf()
 
@@ -13,7 +14,7 @@ export default function AutoDiscovery() {
   const [isScanning, setIsScanning] = useState(false)
   const [services, setServices] = useState({})
   const [selectedService, setSelectedService] = useState(null)
-  const { setServerHost, setServerPort } = useAppContext()
+  const { serverHost, setServerHost, serverPort, setServerPort } = useAppContext()
   let timeout = null
 
   const refreshData = () => {
@@ -124,7 +125,10 @@ export default function AutoDiscovery() {
 
   return (
     <View style={styles.container}>
-      <Text style={[TEXT_COMMON, styles.state]}>{isScanning ? 'Scanning...' : 'Stopped'}</Text>
+      <Text style={[TEXT_COMMON, { fontSize: 24, fontWeight: "bold" }]}>
+        Detected Knobblers
+        <Text style={[TEXT_COMMON, styles.state]}>{isScanning ? '(Scanning...)' : null}</Text>
+      </Text>
 
       <FlatList
         style={{ height: 100 }}
@@ -134,7 +138,7 @@ export default function AutoDiscovery() {
           <RefreshControl
             refreshing={isScanning}
             onRefresh={refreshData}
-            tintColor="skyblue"
+            tintColor={DarkTheme.colors.text}
           />
         }
       />
