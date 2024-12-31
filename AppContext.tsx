@@ -9,7 +9,7 @@ function AppContextProvider({ children }) {
   const [lastOscReceived, setLastOscReceived] = useState([])
   const [lastOscSent, setLastOscSent] = useState([])
   const [serverHost, setServerHost] = useState("")
-  const [serverPort, setServerPort] = useState(2346)
+  const [serverPort, setServerPort] = useState(null)
 
   const sliderRefsRef = useRef(sliderRefs)
   const oscDataRef = useRef(oscData)
