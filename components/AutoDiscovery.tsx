@@ -32,6 +32,10 @@ export default function AutoDiscovery() {
     }, 1000)
   }
 
+  const makeServiceKey = ({ host, port }) => {
+    return host + ":" + port
+  }
+
   useEffect(() => {
     //console.log("USEEFFECT ZERO")
     refreshData()
@@ -55,7 +59,7 @@ export default function AutoDiscovery() {
       //console.log('[Resolve]', JSON.stringify(service, null, 2))
       setServices({
         ...services,
-        [service.host]: service,
+        [makeServiceKey(service)]: service,
       })
     })
     zeroconf.on('error', err => {
@@ -70,11 +74,12 @@ export default function AutoDiscovery() {
   const service = selectedService ? services[selectedService] : null;
   //console.log('SERVICE', service)
 
-  const chooseService = (host: string) => {
+  const chooseService = (host: string, port: number) => {
+    const hashKey = makeServiceKey({ host, port })
     //console.log('Choose', host)
-    setSelectedService(host)
-    setServerHost(services[host]?.host)
-    setServerPort(services[host]?.port)
+    setSelectedService(hashKey)
+    setServerHost(services[hashKey]?.host)
+    setServerPort(services[hashKey]?.port)
   }
 
   const renderRow = ({ item, index }) => {
@@ -90,7 +95,7 @@ export default function AutoDiscovery() {
     const color = (item.host === serverHost && item.port === serverPort) ? selectedColor : baseColor
 
     return (
-      <Pressable key={index} onPress={() => chooseService(item.host)}>
+      <Pressable key={index} onPress={() => chooseService(item.host, item.port)}>
         <View style={{ backgroundColor: color + "44", padding: 20, marginTop: 20, borderRadius: 10 }}>
           <Text style={{ color: color }}>{item.name}</Text>
         </View>
