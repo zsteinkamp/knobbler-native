@@ -98,7 +98,7 @@ function BluhandScreen() {
         }]}>
           {oscData["/bcurrDeviceName"]}
         </Text>
-        <Button title="<< Prev Bank" onPress={() => oscSender.send("/bbankPrev")} />
+        <Button title="← Prev Bank" onPress={() => oscSender.send("/bbankPrev")} />
         <Text style={[TEXT_COMMON, {
           marginTop: 10,
           fontSize: 16,
@@ -106,7 +106,7 @@ function BluhandScreen() {
         }]}>
           {oscData["/bTxtCurrBank"]}
         </Text>
-        <Button title="Next Bank >>" onPress={() => oscSender.send("/bbankNext")} />
+        <Button title="Next Bank →" onPress={() => oscSender.send("/bbankNext")} />
       </View>
       <SliderRows oscData={oscData} isBlu={true} screenH={dimensions.window.height} />
     </View>

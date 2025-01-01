@@ -57,7 +57,7 @@ export default function KnobblerSlider({
         max={1}
         step={0.002} // 500 steps
         minimumTrackTintColor={trackColor}
-        maximumTrackTintColor={trackColor + "44"}
+        maximumTrackTintColor={trackColor + "11"}
         onChange={(val) => sendSliderValue(valAddress, val)}
         onTapNumTaps={isUnmapping ? 1 : 2}
         onTap={isUnmapping ? () => oscSender.send("/unmap" + idx) : () => oscSender.send(defaultAddress, [])}
