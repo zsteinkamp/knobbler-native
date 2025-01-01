@@ -37,7 +37,7 @@ export default function SetupScreen() {
       <View style={{ flex: 1, borderWidth: 0, borderColor: "white" }}>
         <View style={{ flex: 1, flexGrow: 1 }}>
           <Text style={[TEXT_HEADER, { marginBottom: 20 }]}>
-            Knobbler Device Connection
+            Knobbler Max Device Connection
           </Text>
           <View>
             <View style={{ flexDirection: "row", marginBottom: 10 }}>

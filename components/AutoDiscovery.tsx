@@ -57,7 +57,7 @@ export default function AutoDiscovery() {
       if (!service.name.match(/Knobbler/) || service.name.match(/Knobbler UI/)) {
         return
       }
-      console.log('[Resolve]', makeServiceKey(service), JSON.stringify(service, null, 2))
+      //console.log('[Resolve]', makeServiceKey(service), JSON.stringify(service, null, 2))
       const serviceKey = makeServiceKey(service)
       servicesRef.current[serviceKey] = service
       setServices({

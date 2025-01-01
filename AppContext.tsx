@@ -11,6 +11,7 @@ function AppContextProvider({ children }) {
   const [serverHost, setServerHost] = useState("")
   const [serverPort, setServerPort] = useState(null)
   const [collectOsc, setCollectOsc] = useState(false)
+  const [listenPort, setListenPort] = useState(2347)
 
   const sliderRefsRef = useRef(sliderRefs)
   const oscDataRef = useRef(oscData)
@@ -25,6 +26,7 @@ function AppContextProvider({ children }) {
       serverHost, setServerHost,
       serverPort, setServerPort,
       collectOsc, setCollectOsc,
+      listenPort, setListenPort,
     }}>
       {children}
     </AppContext.Provider>

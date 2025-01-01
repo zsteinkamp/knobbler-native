@@ -28,7 +28,7 @@ export function OscSender(collectOsc, lastOscSent, setLastOscSent) {
 const eventEmitter = new NativeEventEmitter(osc);
 
 function OscHandler({ children }) {
-  const { setOscData, oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived, serverHost, serverPort, collectOsc } = useAppContext()
+  const { setOscData, oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived, serverHost, serverPort, listenPort, collectOsc } = useAppContext()
   const [listener, setListener] = useState(null)
 
   const handleMessage = (oscMessage: OscMessage) => {
@@ -51,7 +51,7 @@ function OscHandler({ children }) {
     }
 
     // updated received msgs list
-    if (collectOsc && lastOscReceivedRef?.current?.push) {
+    if (collectOsc && lastOscReceivedRef?.current?.unshift) {
       lastOscReceivedRef.current.unshift([address, value].join(" "))
       setLastOscReceived(lastOscReceivedRef.current.slice(0, RETAIN_OSC_MSG_COUNT))
     }
@@ -60,10 +60,8 @@ function OscHandler({ children }) {
   }
 
   const _subscribe = () => {
-    const ListenPort = 2347;
-
     osc.createClient(serverHost, serverPort);
-    osc.createServer(ListenPort);
+    osc.createServer(listenPort);
     setListener(eventEmitter.addListener('GotMessage', handleMessage))
   }
   const _unsubscribe = () => {
