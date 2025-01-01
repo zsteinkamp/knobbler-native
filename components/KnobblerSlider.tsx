@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { OscSender } from "../OscHandler";
+import { OscSend } from "../OscHandler";
 import { DimensionValue, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import VerticalSlider from "./VerticalSlider"
 import {
@@ -26,14 +26,12 @@ export default function KnobblerSlider({
   trackColor,
   value,
 }) {
-  const { collectOsc, oscDataRef, setOscData, sliderRefsRef, lastOscSent, setLastOscSent } = useAppContext()
-
-  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
+  const { collectOsc, oscDataRef, setOscData, sliderRefsRef, lastOscSentRef, setLastOscSent } = useAppContext()
 
   function sendSliderValue(address: string, val: number) {
     oscDataRef.current[address] = val
     setOscData({ ...oscDataRef.current })
-    oscSender.send(address, [val])
+    OscSend(collectOsc, lastOscSentRef, setLastOscSent, address, [val])
   }
 
   const valAddress = (isBlu ? "/bval" : "/val") + idx
@@ -60,7 +58,7 @@ export default function KnobblerSlider({
         maximumTrackTintColor={trackColor + "11"}
         onChange={(val) => sendSliderValue(valAddress, val)}
         onTapNumTaps={isUnmapping ? 1 : 2}
-        onTap={isUnmapping ? () => oscSender.send("/unmap" + idx) : () => oscSender.send(defaultAddress, [])}
+        onTap={isUnmapping ? () => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/unmap" + idx) : () => OscSend(collectOsc, lastOscSentRef, setLastOscSent, defaultAddress, [])}
         useSpring={false}
         containerStyle={{ borderWidth: 1, borderColor: isUnmapping && "red" }}
       />
@@ -101,7 +99,7 @@ export default function KnobblerSlider({
             <Text numberOfLines={1} style={sliderTextStyle}>
               {oscData[deviceAddress] || EMPTY_STRING}
             </Text>
-            <Text onPress={() => oscSender.send('/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
+            <Text onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, '/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
               {oscData[trackAddress] || EMPTY_STRING}
             </Text>
           </>

@@ -4,7 +4,7 @@ import { useAppContext } from "./AppContext";
 import { useNavigation } from "@react-navigation/native";
 import { DEFAULT_COLOR, TEXT_COMMON } from "./lib/constants";
 import SliderRows from "./components/SliderRows";
-import { OscSender } from "./OscHandler";
+import { OscSend } from "./OscHandler";
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -12,7 +12,7 @@ const screenDimensions = Dimensions.get('screen');
 function BluhandScreen() {
   const { oscData } = useAppContext()
   const navigation = useNavigation();
-  const { collectOsc, lastOscSent, setLastOscSent } = useAppContext()
+  const { collectOsc, lastOscSentRef, setLastOscSent } = useAppContext()
 
   const [isUnmapping, setIsUnmapping] = useState(false)
 
@@ -20,8 +20,6 @@ function BluhandScreen() {
     window: windowDimensions,
     screen: screenDimensions,
   });
-
-  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -41,7 +39,7 @@ function BluhandScreen() {
         <Button color={DEFAULT_COLOR} onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),
       headerRight: () => (
-        <Button onPress={() => { oscSender.send("/btnRefresh") }} title="Refresh" />
+        <Button onPress={() => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }} title="Refresh" />
       ),
     });
   }, [navigation]);
@@ -62,7 +60,7 @@ function BluhandScreen() {
             textAlign: "center",
             padding: 10,
           }}
-          onPress={() => oscSender.send(address)}
+          onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, address)}
         >
           {title}
         </Text>
@@ -98,7 +96,7 @@ function BluhandScreen() {
         }]}>
           {oscData["/bcurrDeviceName"]}
         </Text>
-        <Button title="← Prev Bank" onPress={() => oscSender.send("/bbankPrev")} />
+        <Button title="← Prev Bank" onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/bbankPrev")} />
         <Text style={[TEXT_COMMON, {
           marginTop: 10,
           fontSize: 16,
@@ -106,7 +104,7 @@ function BluhandScreen() {
         }]}>
           {oscData["/bTxtCurrBank"]}
         </Text>
-        <Button title="Next Bank →" onPress={() => oscSender.send("/bbankNext")} />
+        <Button title="Next Bank →" onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/bbankNext")} />
       </View>
       <SliderRows oscData={oscData} isBlu={true} screenH={dimensions.window.height} />
     </View>

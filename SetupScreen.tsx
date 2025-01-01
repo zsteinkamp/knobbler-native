@@ -4,33 +4,26 @@ import { useAppContext } from "./AppContext";
 import OscList from "./components/OscList";
 import AutoDiscovery from "./components/AutoDiscovery";
 import { DarkTheme, useNavigation } from "@react-navigation/native";
-import { OscSender } from "./OscHandler";
-import { ACCENT2_COLOR, TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
+import { OscSend } from "./OscHandler";
+import { TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
 
 export default function SetupScreen() {
-  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, serverPort, collectOsc, setCollectOsc } = useAppContext()
+  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, serverPort, collectOsc, setCollectOsc, lastOscSentRef } = useAppContext()
   const navigation = useNavigation();
-
-  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
 
   React.useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
       headerRight: () => (
-        <Button onPress={() => { oscSender.send("/btnRefresh") }} title="Refresh" />
+        <Button onPress={() => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }} title="Refresh" />
       ),
     });
-  }, [navigation]);
+  }, [navigation, collectOsc, serverHost, serverPort]);
 
   const toggleSwitch = () => {
     setCollectOsc(!collectOsc)
   }
-  /*
-  trackColor={{ false: '#767577', true: '#81b0ff' }}
-  thumbColor={collectOsc ? '#f5dd4b' : '#f4f3f4'}
-  ios_backgroundColor="#3e3e3e"
-  */
 
   return (
     <View style={{ padding: 40, gap: 40, flexDirection: "row", flexGrow: 1 }}>

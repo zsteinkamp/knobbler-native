@@ -3,7 +3,7 @@ import { useAppContext } from "./AppContext";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Dimensions, Text, View } from 'react-native';
 import SliderRows from "./components/SliderRows";
-import { OscSender } from "./OscHandler";
+import { OscSend } from "./OscHandler";
 // https://www.npmjs.com/package/@react-native-community/slider
 
 const windowDimensions = Dimensions.get('window');
@@ -11,7 +11,7 @@ const screenDimensions = Dimensions.get('screen');
 
 export default function KnobblerScreen({ route }) {
   const navigation = useNavigation();
-  const { collectOsc, oscData, lastOscSent, setLastOscSent } = useAppContext()
+  const { collectOsc, oscData, lastOscSentRef, setLastOscSent } = useAppContext()
   const { page } = route.params
 
   const [isUnmapping, setIsUnmapping] = useState(false)
@@ -20,8 +20,6 @@ export default function KnobblerScreen({ route }) {
     window: windowDimensions,
     screen: screenDimensions,
   });
-
-  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -43,7 +41,7 @@ export default function KnobblerScreen({ route }) {
         <Button color="#990000" onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),
       headerRight: () => (
-        <Button onPress={() => { oscSender.send("/btnRefresh") }} title="Refresh" />
+        <Button onPress={() => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }} title="Refresh" />
       ),
     });
   }, [navigation]);

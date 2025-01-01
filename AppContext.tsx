@@ -16,13 +16,14 @@ function AppContextProvider({ children }) {
   const sliderRefsRef = useRef(sliderRefs)
   const oscDataRef = useRef(oscData)
   const lastOscReceivedRef = useRef(lastOscReceived)
+  const lastOscSentRef = useRef(lastOscSent)
 
   return (
     <AppContext.Provider value={{
       oscData, setOscData, oscDataRef,
       sliderRefs, setSliderRefs, sliderRefsRef,
       lastOscReceived, setLastOscReceived, lastOscReceivedRef,
-      lastOscSent, setLastOscSent,
+      lastOscSent, setLastOscSent, lastOscSentRef,
       serverHost, setServerHost,
       serverPort, setServerPort,
       collectOsc, setCollectOsc,

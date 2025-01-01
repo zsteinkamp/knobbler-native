@@ -4,24 +4,21 @@ import osc from 'expo-osc';
 import { NativeEventEmitter } from 'react-native';
 import { RETAIN_OSC_MSG_COUNT } from './lib/constants';
 
-export function OscSender(collectOsc, lastOscSent, setLastOscSent) {
-  return {
-    send: (address: string, data?: OscMessageData) => {
-      if (collectOsc) {
-        const newSent = [...lastOscSent]
-        newSent.unshift([
-          address,
-          (typeof (data) != "undefined") ? data[0] : null
-        ].join(" "))
-        setLastOscSent(newSent.slice(0, RETAIN_OSC_MSG_COUNT))
-      }
+export function OscSend(collectOsc, lastOscSentRef, setLastOscSent, address: string, data?: OscMessageData) {
+  //console.log('OSC_SEND', { collectOsc, lastOscSentRef: lastOscSentRef?.current })
+  if (collectOsc && lastOscSentRef?.current) {
+    lastOscSentRef.current.unshift([
+      address,
+      (typeof (data) != "undefined") ? data[0] : null
+    ].join(" "))
+    //console.log('NEWSENT', lastOscSentRef.current.slice(0, 10))
+    setLastOscSent(lastOscSentRef.current.slice(0, RETAIN_OSC_MSG_COUNT))
+  }
 
-      if (data) {
-        osc.sendMessage(address, data)
-      } else {
-        osc.sendMessage(address)
-      }
-    }
+  if (data) {
+    osc.sendMessage(address, data)
+  } else {
+    osc.sendMessage(address)
   }
 }
 
@@ -59,23 +56,21 @@ function OscHandler({ children }) {
     setOscData({ ...oscDataRef.current })
   }
 
-  const _subscribe = () => {
-    osc.createClient(serverHost, serverPort);
-    osc.createServer(listenPort);
-    setListener(eventEmitter.addListener('GotMessage', handleMessage))
-  }
-  const _unsubscribe = () => {
-    listener && listener.remove();
-    setListener(null);
-  }
-
   useEffect(() => {
     if (!serverHost || !serverPort) {
       return
     }
-    _subscribe();
-    return () => _unsubscribe();
-  }, [serverHost, serverPort]);
+    // subscribe
+    //console.log('SUBSCRIBE', { serverHost, serverPort, collectOsc })
+    osc.createClient(serverHost, serverPort);
+    osc.createServer(listenPort);
+    setListener(eventEmitter.addListener('GotMessage', handleMessage))
+    return () => {
+      // unsubscribe
+      listener && listener.remove();
+      setListener(null);
+    }
+  }, [serverHost, serverPort, collectOsc]);
 
   return (<>{children}</>)
 }
