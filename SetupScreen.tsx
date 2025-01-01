@@ -8,7 +8,7 @@ import { OscSend } from "./OscHandler";
 import { DEFAULT_COLOR, TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
 
 export default function SetupScreen() {
-  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, setServerHost, serverPort, setServerPort, collectOsc, setCollectOsc, lastOscSentRef } = useAppContext()
+  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, setServerHost, serverPort, setServerPort, collectOsc, setCollectOsc, lastOscSentRef, lastOscReceivedRef } = useAppContext()
   const navigation = useNavigation();
 
   React.useEffect(() => {
@@ -25,9 +25,7 @@ export default function SetupScreen() {
     setCollectOsc(!collectOsc)
   }
 
-  const onChangeHost = (val: string) => setServerHost(val)
-  const onChangePort = (val: string) => setServerPort(parseInt(val))
-  const clearConnection = () => {
+  const clearConnection = async () => {
     setServerHost(null)
     setServerPort(null)
   }
@@ -52,7 +50,7 @@ export default function SetupScreen() {
                 <Text style={[TEXT_COMMON, { paddingVertical: 10, flex: 1 }]}>Hostname:</Text>
                 <TextInput
                   style={[TEXT_COMMON, INPUT_COMMON, { flex: 4 }]}
-                  onChangeText={onChangeHost}
+                  onChangeText={setServerHost}
                   value={serverHost}
                 />
               </View>
@@ -60,8 +58,8 @@ export default function SetupScreen() {
                 <Text style={[TEXT_COMMON, { paddingVertical: 10, flex: 1 }]}>Port:</Text>
                 <TextInput
                   style={[TEXT_COMMON, INPUT_COMMON, { flex: 4 }]}
-                  onChangeText={onChangePort}
-                  value={serverPort?.toString()}
+                  onChangeText={setServerPort}
+                  value={serverPort ? serverPort.toString() : null}
                   keyboardType="numeric"
                 />
               </View>
@@ -84,13 +82,13 @@ export default function SetupScreen() {
           />
           <Text style={[TEXT_COMMON, { marginTop: 8, marginLeft: 16, flexGrow: 1 }]}>OSC Debug (has a performance impact)</Text>
         </View>
-        {collectOsc && (
+        {collectOsc && serverHost && serverPort && (
           <>
             <View style={{ flex: 1, marginBottom: 20, borderWidth: 0, borderColor: "red" }}>
-              <OscList title="Last Osc Sent" data={lastOscSent} setData={setLastOscSent} />
+              <OscList title="Last Osc Sent" data={lastOscSent} dataRef={lastOscSentRef} setData={setLastOscSent} />
             </View>
             <View style={{ flex: 1, marginTop: 20 }}>
-              <OscList title="Last Osc Received" data={lastOscReceived} setData={setLastOscReceived} />
+              <OscList title="Last Osc Received" data={lastOscReceived} dataRef={lastOscReceivedRef} setData={setLastOscReceived} />
             </View>
           </>
         )}

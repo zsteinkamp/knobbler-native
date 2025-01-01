@@ -2,9 +2,15 @@ import React from "react"
 import { Button, FlatList, Text, View } from "react-native"
 import { TEXT_COMMON, TEXT_HEADER } from "../lib/constants"
 
-export default function OscList({ containerStyle = {}, title, data, setData }) {
+export default function OscList({ containerStyle = {}, title, data, dataRef, setData }) {
   const renderListItem = ({ item }) => {
     return <Text style={TEXT_COMMON}>{item}</Text>
+  }
+
+  const clearData = () => {
+    //console.log('CLEAR', data)
+    dataRef.current = []
+    setData([])
   }
 
   return (
@@ -16,7 +22,7 @@ export default function OscList({ containerStyle = {}, title, data, setData }) {
           </Text>
         </View>
         <View style={{ flexGrow: 0 }}>
-          <Button title="Clear" onPress={() => { setData([]) }} />
+          <Button title="Clear" onPress={clearData} />
         </View>
       </View>
       <FlatList data={data} renderItem={renderListItem} />

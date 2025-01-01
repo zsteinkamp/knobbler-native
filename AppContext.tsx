@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 // thank u https://thelinuxcode.com/react-context-for-beginners-the-complete-guide-2023/
 const AppContext = createContext(null)
@@ -8,8 +9,6 @@ function AppContextProvider({ children }) {
   const [sliderRefs, setSliderRefs] = useState({})
   const [lastOscReceived, setLastOscReceived] = useState([])
   const [lastOscSent, setLastOscSent] = useState([])
-  const [serverHost, setServerHost] = useState("")
-  const [serverPort, setServerPort] = useState(null)
   const [collectOsc, setCollectOsc] = useState(false)
   const [listenPort, setListenPort] = useState(2347)
 
@@ -17,6 +16,50 @@ function AppContextProvider({ children }) {
   const oscDataRef = useRef(oscData)
   const lastOscReceivedRef = useRef(lastOscReceived)
   const lastOscSentRef = useRef(lastOscSent)
+
+  const dataFetch = async (key: string) => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(key);
+      //console.log(`Read key ${key} got ${jsonValue}`)
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+      console.error('Error reading `' + key + '`', e)
+    }
+  }
+
+  const dataStore = async (key: string, data: any) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(data));
+      //console.log(`Saved key ${key} value ${await AsyncStorage.getItem(key)}`)
+    } catch (e) {
+      // saving error
+      console.error('Error saving `' + key + '` ' + JSON.stringify(data), e)
+    }
+  }
+
+  const [serverHost, _setServerHost] = useState("") // _setServerHost gets wrapped by setServerHost below
+  const [serverPort, _setServerPort] = useState(null) // _setServerPort gets wrapped by setServerPort below
+
+  useEffect(() => {
+    // init vals from AsyncStorage
+    if (!serverHost) {
+      dataFetch('serverHost').then((val) => _setServerHost(val))
+    }
+    if (!serverPort) {
+      dataFetch('serverPort').then((val) => _setServerPort(val))
+    }
+  })
+
+  const setServerHost = async (val: string) => {
+    dataStore('serverHost', val)
+    _setServerHost(val)
+  }
+  const setServerPort = async (val: string) => {
+    const intVal = val ? parseInt(val) : null
+    dataStore('serverPort', intVal)
+    _setServerPort(intVal)
+  }
 
   return (
     <AppContext.Provider value={{
@@ -28,6 +71,7 @@ function AppContextProvider({ children }) {
       serverPort, setServerPort,
       collectOsc, setCollectOsc,
       listenPort, setListenPort,
+      dataFetch, dataStore,
     }}>
       {children}
     </AppContext.Provider>

@@ -58,6 +58,11 @@ function OscHandler({ children }) {
 
   useEffect(() => {
     if (!serverHost || !serverPort) {
+      if (listener) {
+        // zero out the connection
+        listener.remove();
+        setListener(null);
+      }
       return
     }
     // subscribe
