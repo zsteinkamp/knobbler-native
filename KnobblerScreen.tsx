@@ -37,6 +37,7 @@ export default function KnobblerScreen({ route }) {
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
+      headerTitle: (page === 1 ? "☝️" : "✌️") + " Knobbler",
       headerLeft: () => (
         <Button color="#990000" onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),

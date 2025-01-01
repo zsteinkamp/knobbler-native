@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, View, Text, Button, StyleProp, ViewStyle } from "react-native";
+import { Dimensions, View, Text, Button, StyleProp, ViewStyle, TouchableHighlight } from "react-native";
 import { useAppContext } from "./AppContext";
 import { useNavigation } from "@react-navigation/native";
 import { DEFAULT_COLOR, TEXT_COMMON } from "./lib/constants";
@@ -35,6 +35,7 @@ function BluhandScreen() {
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
+      headerTitle: "✋ Bluhand",
       headerLeft: () => (
         <Button color={DEFAULT_COLOR} onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),
@@ -49,23 +50,26 @@ function BluhandScreen() {
     const colorKey = '/shortcut' + idx + 'Color'
     const color = (oscData[colorKey] ? "#" + oscData[colorKey] : DEFAULT_COLOR).substring(0, 7)
     const title = oscData['/shortcutName' + idx] || ("Shortcut " + idx)
-    const style = { borderRadius: 10, borderWidth: 1, flex: 1, backgroundColor: color + "44" } as StyleProp<ViewStyle>
+    const style = { borderRadius: 10, overflow: "hidden", borderWidth: 1, flex: 1, backgroundColor: color + "44" } as StyleProp<ViewStyle>
     const address = (isUnmapping ? '/unmapshortcut' : '/mapshortcut') + idx
     shortcuts.push(
-      <View key={idx} style={[style, isUnmapping ? { borderColor: "red" } : null]}>
-        <Text
-          numberOfLines={1}
-          style={{
-            color,
-            textAlign: "center",
-            paddingHorizontal: 10,
-            paddingVertical: 20,
-          }}
-          onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, address)}
-        >
-          {title}
-        </Text>
-      </View>
+      <View key={idx} style={[{ flex: 1, }, style, isUnmapping ? { borderColor: "red" } : null]}>
+        <TouchableHighlight onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, address)} underlayColor={color + "44"}>
+          <Text
+            numberOfLines={1}
+            style={{
+              color,
+              fontSize: 19,
+              fontWeight: "bold",
+              textAlign: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 16,
+            }}
+          >
+            {title}
+          </Text>
+        </TouchableHighlight>
+      </View >
     )
   }
 
@@ -74,7 +78,7 @@ function BluhandScreen() {
       <View style={{
         marginTop: 15,
         marginHorizontal: 0,
-        gap: 10,
+        gap: 8,
         flexDirection: "row",
         alignContent: "center",
         justifyContent: "space-evenly"
@@ -99,8 +103,8 @@ function BluhandScreen() {
         </Text>
         <Button title="← Prev Bank" onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/bbankPrev")} />
         <Text style={[TEXT_COMMON, {
-          marginTop: 10,
-          fontSize: 16,
+          marginTop: 8,
+          fontSize: 19,
           paddingHorizontal: 20
         }]}>
           {oscData["/bTxtCurrBank"]}
