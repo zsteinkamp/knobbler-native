@@ -17,56 +17,51 @@ const commonScreenOptions = {
   headerLeft: () => <Button color={"#" + DEFAULT_COLOR} title="Unmap" />
 }
 
+const TITLES = {
+  knobbler1: { title: "Knobbler 1", emoji: "☝" },
+  knobbler2: { title: "Knobbler 2", emoji: "✌" },
+  bluhand: { title: "Bluhand", emoji: "✋" },
+  control: { title: "Control", emoji: "🎧️" },
+  setup: { title: "Setup", emoji: "⚙️" },
+}
+
+const titleOptions = (key) => {
+  const meta = TITLES[key]
+  return {
+    ...commonScreenOptions,
+    title: meta.title,
+    headerTitle: meta.emoji + " " + meta.title,
+    tabBarIcon: () => { return <Text>{meta.emoji}</Text> },
+  }
+}
+
 const MyTabs = createBottomTabNavigator({
   screens: {
     Knobbler: {
       screen: KnobblerScreen,
-      options: {
-        ...commonScreenOptions,
-        title: "️Knobbler",
-        headerTitle: "️☝️ Knobbler",
-        tabBarIcon: () => { return <Text>☝</Text> },
-      },
+      options: titleOptions('knobbler1'),
       initialParams: { 
         page: 1
       }
     },
     Knobbler2: {
       screen: KnobblerScreen,
-      options: {
-        ...commonScreenOptions,
-        title: "Knobbler",
-        headerTitle: "✌️ Knobbler",
-        tabBarIcon: () => { return <Text>✌</Text> },
-      },
+      options: titleOptions('knobbler2'),
       initialParams: { 
         page: 2
       }
     },
     Bluhand: {
       screen: BluhandScreen,
-      options: {
-        ...commonScreenOptions,
-        title: "Bluhand",
-        headerTitle: "✋ Bluhand",
-        tabBarIcon: () => { return <Text>✋</Text> },
-      }
+      options: titleOptions('bluhand'),
     },
     Control: {
       screen: ControlScreen,
-      options: {
-        title: "Control",
-        headerTitle: "🎧️ Control",
-        tabBarIcon: () => { return <Text>🎧️</Text> },
-      },
+      options: titleOptions('control'),
     },
     Setup: {
       screen: SetupScreen,
-      options: {
-        title: "Setup",
-        headerTitle: "⚙️ Setup",
-        tabBarIcon: () => { return <Text>⚙️</Text> },
-      },
+      options: titleOptions('setup'),
     },
   }
 })
