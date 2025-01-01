@@ -16,7 +16,7 @@ export default function SliderRow({
   const startIdx = (rows * cols * ((page) - 1)) + 1
 
   const sliderOverhead = isBlu ? 224 : 273
-  const otherOverhead = isBlu ? 40 : -100
+  const otherOverhead = isBlu ? 56 : -100
   const sliderHeight = ((screenH - otherOverhead) / 2) - sliderOverhead
 
   const sliders = []

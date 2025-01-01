@@ -47,7 +47,7 @@ export default function KnobblerScreen({ route }) {
   }, [navigation]);
 
   return (
-    <View ref={ref} style={{ marginTop: 20 }}>
+    <View ref={ref} style={{ marginTop: 15 }}>
       <SliderRows oscData={oscData} isBlu={false} page={page} isUnmapping={isUnmapping} screenH={dimensions.window.height} />
     </View>
   )

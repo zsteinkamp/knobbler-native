@@ -49,7 +49,7 @@ function BluhandScreen() {
     const colorKey = '/shortcut' + idx + 'Color'
     const color = (oscData[colorKey] ? "#" + oscData[colorKey] : DEFAULT_COLOR).substring(0, 7)
     const title = oscData['/shortcutName' + idx] || ("Shortcut " + idx)
-    const style = { borderWidth: 1, flex: 1, backgroundColor: color + "44" } as StyleProp<ViewStyle>
+    const style = { borderRadius: 10, borderWidth: 1, flex: 1, backgroundColor: color + "44" } as StyleProp<ViewStyle>
     const address = (isUnmapping ? '/unmapshortcut' : '/mapshortcut') + idx
     shortcuts.push(
       <View key={idx} style={[style, isUnmapping ? { borderColor: "red" } : null]}>
@@ -58,7 +58,8 @@ function BluhandScreen() {
           style={{
             color,
             textAlign: "center",
-            padding: 10,
+            paddingHorizontal: 10,
+            paddingVertical: 20,
           }}
           onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, address)}
         >
@@ -71,9 +72,9 @@ function BluhandScreen() {
   return (
     <View>
       <View style={{
-        marginTop: 20,
-        marginHorizontal: 15,
-        gap: 20,
+        marginTop: 15,
+        marginHorizontal: 0,
+        gap: 10,
         flexDirection: "row",
         alignContent: "center",
         justifyContent: "space-evenly"
