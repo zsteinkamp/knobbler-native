@@ -35,7 +35,6 @@ function BluhandScreen() {
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
-      headerTitle: "✋ Bluhand",
       headerLeft: () => (
         <Button color={DEFAULT_COLOR} onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),

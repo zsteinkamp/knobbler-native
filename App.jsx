@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import KnobblerScreen from './KnobblerScreen'
 import BluhandScreen from './BluhandScreen'
 import SetupScreen from './SetupScreen'
+import ControlScreen from './ControlScreen'
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DEFAULT_COLOR } from './lib/constants';
@@ -23,6 +24,7 @@ const MyTabs = createBottomTabNavigator({
       options: {
         ...commonScreenOptions,
         title: "️Knobbler",
+        headerTitle: "️☝️ Knobbler",
         tabBarIcon: () => { return <Text>☝</Text> },
       },
       initialParams: { 
@@ -34,6 +36,7 @@ const MyTabs = createBottomTabNavigator({
       options: {
         ...commonScreenOptions,
         title: "Knobbler",
+        headerTitle: "✌️ Knobbler",
         tabBarIcon: () => { return <Text>✌</Text> },
       },
       initialParams: { 
@@ -45,13 +48,23 @@ const MyTabs = createBottomTabNavigator({
       options: {
         ...commonScreenOptions,
         title: "Bluhand",
+        headerTitle: "✋ Bluhand",
         tabBarIcon: () => { return <Text>✋</Text> },
       }
+    },
+    Control: {
+      screen: ControlScreen,
+      options: {
+        title: "Control",
+        headerTitle: "🎧️ Control",
+        tabBarIcon: () => { return <Text>🎧️</Text> },
+      },
     },
     Setup: {
       screen: SetupScreen,
       options: {
         title: "Setup",
+        headerTitle: "⚙️ Setup",
         tabBarIcon: () => { return <Text>⚙️</Text> },
       },
     },

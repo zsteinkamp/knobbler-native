@@ -15,7 +15,6 @@ export default function SetupScreen() {
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
-      headerTitle: "⚙️ Setup",
       headerRight: () => (
         <Button onPress={() => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }} title="Refresh" />
       ),
