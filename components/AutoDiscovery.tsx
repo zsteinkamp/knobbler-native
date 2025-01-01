@@ -86,6 +86,18 @@ export default function AutoDiscovery() {
   }
 
   const renderRow = ({ item, index }) => {
+    if (item.noResults) {
+      return (
+        <View style={{ backgroundColor: ACCENT2_COLOR + "44", borderRadius: 10, padding: 20, marginTop: 20 }}>
+          <Text style={[TEXT_COMMON, { fontSize: 18, fontWeight: "bold" }]}>
+            Nobody Home :(
+          </Text>
+          <Text style={[TEXT_COMMON]}>
+            Ensure that you have Knobbler added to a running Ableton Live Set and are on the same network.
+          </Text>
+        </View>
+      )
+    }
     if (item.lastRow) {
       return (
         <Text style={[TEXT_COMMON, { margin: 20, opacity: 0.5 }]}>
@@ -105,6 +117,11 @@ export default function AutoDiscovery() {
   }
 
   const renderData = [...Object.values(services)]
+  if (renderData.length === 0 && !isScanning) {
+    renderData.push({
+      noResults: true
+    })
+  }
   renderData.push({
     lastRow: true
   })
@@ -122,7 +139,6 @@ export default function AutoDiscovery() {
           refreshing={isScanning}
           onRefresh={refreshData}
           tintColor={DarkTheme.colors.text} />} />
-
     </View>
   )
 }

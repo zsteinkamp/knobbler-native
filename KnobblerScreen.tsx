@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAppContext } from "./AppContext";
-import { useNavigation } from "@react-navigation/native";
+import { DarkTheme, useNavigation } from "@react-navigation/native";
 import { Button, Dimensions, Text, View } from 'react-native';
 import SliderRows from "./components/SliderRows";
 import { OscSend } from "./OscHandler";
+import { TEXT_COMMON } from "./lib/constants";
+import SetupModal from "./components/SetupModal";
 // https://www.npmjs.com/package/@react-native-community/slider
 
 const windowDimensions = Dimensions.get('window');
@@ -11,7 +13,7 @@ const screenDimensions = Dimensions.get('screen');
 
 export default function KnobblerScreen({ route }) {
   const navigation = useNavigation();
-  const { collectOsc, oscData, lastOscSentRef, setLastOscSent } = useAppContext()
+  const { serverHost, serverPort, collectOsc, oscData, lastOscSentRef, setLastOscSent } = useAppContext()
   const { page } = route.params
 
   const [isUnmapping, setIsUnmapping] = useState(false)
@@ -34,6 +36,9 @@ export default function KnobblerScreen({ route }) {
   const ref = useRef(null);
 
   React.useEffect(() => {
+    if (!serverHost || !serverPort) {
+      return
+    }
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
@@ -44,11 +49,12 @@ export default function KnobblerScreen({ route }) {
         <Button onPress={() => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }} title="Refresh" />
       ),
     });
-  }, [navigation]);
+  }, [navigation, serverHost, serverPort]);
 
   return (
-    <View ref={ref} style={{ marginTop: 15 }}>
+    <View ref={ref} style={{ marginTop: 15, marginHorizontal: 10 }}>
       <SliderRows oscData={oscData} isBlu={false} page={page} isUnmapping={isUnmapping} screenH={dimensions.window.height} />
+      <SetupModal />
     </View>
   )
 }

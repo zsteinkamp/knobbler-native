@@ -72,6 +72,7 @@ function OscHandler({ children }) {
     setListener(eventEmitter.addListener('GotMessage', handleMessage))
     return () => {
       // unsubscribe
+      //console.log('UN-SUBSCRIBE', { listener, serverHost, serverPort })
       listener && listener.remove();
       setListener(null);
     }

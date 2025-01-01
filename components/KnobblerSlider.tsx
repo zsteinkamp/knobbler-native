@@ -67,16 +67,22 @@ export default function KnobblerSlider({
 
   sliderRefsRef.current[valAddress] = sliderRef
 
+  const sliderValStrStyle = [
+    TEXT_COMMON, {
+      width: "100%",
+      textAlign: "center",
+    } as StyleProp<TextStyle>]
   const sliderTextStyle = [
     TEXT_COMMON, {
       width: "100%",
-      textAlign: "center"
+      textAlign: "left",
+      marginHorizontal: 10,
     } as StyleProp<TextStyle>]
 
   const viewStyle = {
     backgroundColor: trackColor + "33",
     flex: 1,
-    padding: 20,
+    padding: 10,
     borderRadius: 10,
   } as StyleProp<ViewStyle>
 
@@ -84,7 +90,7 @@ export default function KnobblerSlider({
     <View
       style={viewStyle}
     >
-      <Text numberOfLines={1} style={sliderTextStyle}>
+      <Text numberOfLines={1} style={sliderValStrStyle}>
         {oscData[valStrAddress] || EMPTY_STRING}
       </Text>
       <View style={{ width: "100%", paddingVertical: 10, marginHorizontal: "auto" }}>

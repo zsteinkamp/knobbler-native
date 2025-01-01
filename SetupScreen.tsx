@@ -12,12 +12,17 @@ export default function SetupScreen() {
   const navigation = useNavigation();
 
   React.useEffect(() => {
+    // only put a refresh button if both host and port
+    const headerRight = (serverHost && serverPort) ?
+      () => <Button onPress={
+        () => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }
+      } title="Refresh" />
+      : () => { }
+
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
-      headerRight: () => (
-        <Button onPress={() => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }} title="Refresh" />
-      ),
+      headerRight,
     });
   }, [navigation, collectOsc, serverHost, serverPort]);
 
@@ -44,6 +49,11 @@ export default function SetupScreen() {
           <Text style={[TEXT_HEADER, { marginBottom: 20 }]}>
             Knobbler Max Device Connection
           </Text>
+          {(!serverHost || !serverPort) ? (
+            <View style={{ marginBottom: 20 }}>
+              <Text style={{ color: DarkTheme.colors.notification }}>Select a Knobbler from the list below or enter the details manually.</Text>
+            </View>
+          ) : null}
           <View style={{ flexDirection: "row" }}>
             <View style={{ flex: 2 }}>
               <View style={{ flexDirection: "row", marginBottom: 10 }}>
@@ -65,7 +75,9 @@ export default function SetupScreen() {
               </View>
             </View>
             <View style={{ flex: 1 }}>
-              <Button color={DEFAULT_COLOR} title="Clear" onPress={clearConnection} />
+              {(serverHost || serverPort) && (
+                <Button color={DEFAULT_COLOR} title="Clear" onPress={clearConnection} />
+              )}
             </View>
           </View>
           <AutoDiscovery />

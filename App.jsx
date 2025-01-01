@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Text } from 'react-native';
+import { Text } from 'react-native';
 import AppContextProvider from './AppContext'
 import OscHandler from './OscHandler';
 import { createStaticNavigation, DarkTheme } from '@react-navigation/native';
@@ -10,12 +10,6 @@ import SetupScreen from './SetupScreen'
 import ControlScreen from './ControlScreen'
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DEFAULT_COLOR } from './lib/constants';
-
-const commonScreenOptions = {
-  // placeholder
-  headerLeft: () => <Button color={"#" + DEFAULT_COLOR} title="Unmap" />
-}
 
 const TITLES = {
   knobbler1: { title: "Knobbler 1", emoji: "☝" },
@@ -28,7 +22,6 @@ const TITLES = {
 const titleOptions = (key) => {
   const meta = TITLES[key]
   return {
-    ...commonScreenOptions,
     title: meta.title,
     headerTitle: meta.emoji + " " + meta.title,
     tabBarIcon: () => { return <Text>{meta.emoji}</Text> },

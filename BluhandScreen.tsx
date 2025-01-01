@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { DEFAULT_COLOR, TEXT_COMMON } from "./lib/constants";
 import SliderRows from "./components/SliderRows";
 import { OscSend } from "./OscHandler";
+import SetupModal from "./components/SetupModal";
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -12,7 +13,7 @@ const screenDimensions = Dimensions.get('screen');
 function BluhandScreen() {
   const { oscData } = useAppContext()
   const navigation = useNavigation();
-  const { collectOsc, lastOscSentRef, setLastOscSent } = useAppContext()
+  const { serverHost, serverPort, collectOsc, lastOscSentRef, setLastOscSent } = useAppContext()
 
   const [isUnmapping, setIsUnmapping] = useState(false)
 
@@ -32,6 +33,9 @@ function BluhandScreen() {
   });
 
   React.useEffect(() => {
+    if (!serverHost || !serverPort) {
+      return
+    }
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
@@ -42,7 +46,7 @@ function BluhandScreen() {
         <Button onPress={() => { OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/btnRefresh") }} title="Refresh" />
       ),
     });
-  }, [navigation]);
+  }, [navigation, serverHost, serverPort]);
 
   const shortcuts = []
   for (let idx = 1; idx <= 8; idx++) {
@@ -73,7 +77,7 @@ function BluhandScreen() {
   }
 
   return (
-    <View>
+    <View style={{ marginTop: 0, marginHorizontal: 10 }}>
       <View style={{
         marginTop: 15,
         marginHorizontal: 0,
@@ -111,6 +115,7 @@ function BluhandScreen() {
         <Button title="Next Bank →" onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/bbankNext")} />
       </View>
       <SliderRows oscData={oscData} isBlu={true} screenH={dimensions.window.height} />
+      <SetupModal />
     </View>
   );
 }
