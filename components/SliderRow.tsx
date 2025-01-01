@@ -24,7 +24,9 @@ export default function SliderRow({
     const idx = startIdx + col + ((row - 1) * cols)
 
     const valAddress = (isBlu ? "/bval" : "/val") + idx
-    const trackColor = "#" + ((oscData[valAddress + "color"]) || DEFAULT_COLOR).substring(0, 6)
+    const colorAddress = valAddress + "color"
+    const trackColor = (oscData[colorAddress] ? "#" + oscData[colorAddress] : DEFAULT_COLOR).substring(0, 7)
+    //console.log('TRACKCOLOR', trackColor)
 
     sliders.push(
       <KnobblerSlider

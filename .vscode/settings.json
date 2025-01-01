@@ -12,6 +12,7 @@
     "Knobbler",
     "mapshortcut",
     "Pressable",
+    "TRACKCOLOR",
     "Unmapping",
     "unmapshortcut",
     "zeroconf"
