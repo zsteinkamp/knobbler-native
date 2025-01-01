@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-native';
+import { Button, Text } from 'react-native';
 import AppContextProvider from './AppContext'
 import OscHandler from './OscHandler';
 import { createStaticNavigation, DarkTheme } from '@react-navigation/native';
@@ -18,12 +18,19 @@ const commonScreenOptions = {
 
 const MyTabs = createBottomTabNavigator({
   screens: {
-    Setup: SetupScreen,
+    Setup: {
+      screen: SetupScreen,
+      options: {
+        title: "Setup",
+        tabBarIcon: () => { return <Text>⚙️</Text> },
+      },
+    },
     Knobbler: {
       screen: KnobblerScreen,
       options: {
         ...commonScreenOptions,
-        title: "️Knobbler ☝",
+        title: "️Knobbler",
+        tabBarIcon: () => { return <Text>☝</Text> },
       },
       initialParams: { 
         page: 1
@@ -33,7 +40,8 @@ const MyTabs = createBottomTabNavigator({
       screen: KnobblerScreen,
       options: {
         ...commonScreenOptions,
-        title: "Knobbler ✌",
+        title: "Knobbler",
+        tabBarIcon: () => { return <Text>✌</Text> },
       },
       initialParams: { 
         page: 2
@@ -43,6 +51,8 @@ const MyTabs = createBottomTabNavigator({
       screen: BluhandScreen,
       options: {
         ...commonScreenOptions,
+        title: "Bluhand",
+        tabBarIcon: () => { return <Text>✋</Text> },
       }
     },
   }
