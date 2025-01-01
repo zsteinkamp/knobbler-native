@@ -55,10 +55,10 @@ const MyTabs = createBottomTabNavigator({
       screen: BluhandScreen,
       options: titleOptions('bluhand'),
     },
-    Control: {
+    /*Control: {
       screen: ControlScreen,
       options: titleOptions('control'),
-    },
+    },*/
     Setup: {
       screen: SetupScreen,
       options: titleOptions('setup'),
