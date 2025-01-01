@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FlatList, RefreshControl, Text, Pressable, View } from "react-native";
 
 import Zeroconf from "react-native-zeroconf";
-import { TEXT_COMMON } from "../lib/constants";
+import { ACCENT1_COLOR, ACCENT2_COLOR, TEXT_COMMON } from "../lib/constants";
 
 import { NetworkInfo } from 'react-native-network-info'
 import { useAppContext } from "../AppContext";
@@ -13,6 +13,7 @@ const zeroconf = new Zeroconf()
 export default function AutoDiscovery() {
   const [isScanning, setIsScanning] = useState(false)
   const [services, setServices] = useState({})
+  const servicesRef = useRef(services)
   const [selectedService, setSelectedService] = useState(null)
   const { serverHost, setServerHost, serverPort, setServerPort } = useAppContext()
   let timeout = null
@@ -56,7 +57,9 @@ export default function AutoDiscovery() {
       if (!service.name.match(/Knobbler/) || service.name.match(/Knobbler UI/)) {
         return
       }
-      //console.log('[Resolve]', JSON.stringify(service, null, 2))
+      console.log('[Resolve]', makeServiceKey(service), JSON.stringify(service, null, 2))
+      const serviceKey = makeServiceKey(service)
+      servicesRef.current[serviceKey] = service
       setServices({
         ...services,
         [makeServiceKey(service)]: service,
@@ -64,10 +67,10 @@ export default function AutoDiscovery() {
     })
     zeroconf.on('error', err => {
       setIsScanning(false)
-      //console.log('[Error]', err)
+      console.error('[Error]', err)
     })
     return () => {
-      zeroconf.removeDeviceListeners()
+      zeroconf.removeAllListeners()
     }
   }, [])
 
@@ -90,9 +93,7 @@ export default function AutoDiscovery() {
         </Text>
       )
     }
-    const baseColor = "#3399CC"
-    const selectedColor = "#FFCC33"
-    const color = (item.host === serverHost && item.port === serverPort) ? selectedColor : baseColor
+    const color = (item.host === serverHost && item.port === serverPort) ? ACCENT1_COLOR : ACCENT2_COLOR
 
     return (
       <Pressable key={index} onPress={() => chooseService(item.host, item.port)}>

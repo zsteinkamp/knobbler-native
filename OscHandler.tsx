@@ -4,15 +4,17 @@ import osc from 'expo-osc';
 import { NativeEventEmitter } from 'react-native';
 import { RETAIN_OSC_MSG_COUNT } from './lib/constants';
 
-export function OscSender(lastOscSent, setLastOscSent) {
+export function OscSender(collectOsc, lastOscSent, setLastOscSent) {
   return {
     send: (address: string, data?: OscMessageData) => {
-      const newSent = [...lastOscSent]
-      newSent.unshift([
-        address,
-        (typeof (data) != "undefined") ? data[0] : null
-      ].join(" "))
-      setLastOscSent(newSent.slice(0, RETAIN_OSC_MSG_COUNT))
+      if (collectOsc) {
+        const newSent = [...lastOscSent]
+        newSent.unshift([
+          address,
+          (typeof (data) != "undefined") ? data[0] : null
+        ].join(" "))
+        setLastOscSent(newSent.slice(0, RETAIN_OSC_MSG_COUNT))
+      }
 
       if (data) {
         osc.sendMessage(address, data)
@@ -26,7 +28,7 @@ export function OscSender(lastOscSent, setLastOscSent) {
 const eventEmitter = new NativeEventEmitter(osc);
 
 function OscHandler({ children }) {
-  const { setOscData, oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived, serverHost, serverPort } = useAppContext()
+  const { setOscData, oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived, serverHost, serverPort, collectOsc } = useAppContext()
   const [listener, setListener] = useState(null)
 
   const handleMessage = (oscMessage: OscMessage) => {
@@ -49,7 +51,7 @@ function OscHandler({ children }) {
     }
 
     // updated received msgs list
-    if (lastOscReceivedRef?.current?.push) {
+    if (collectOsc && lastOscReceivedRef?.current?.push) {
       lastOscReceivedRef.current.unshift([address, value].join(" "))
       setLastOscReceived(lastOscReceivedRef.current.slice(0, RETAIN_OSC_MSG_COUNT))
     }

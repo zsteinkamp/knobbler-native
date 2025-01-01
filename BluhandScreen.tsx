@@ -12,7 +12,7 @@ const screenDimensions = Dimensions.get('screen');
 function BluhandScreen() {
   const { oscData } = useAppContext()
   const navigation = useNavigation();
-  const { lastOscSent, setLastOscSent } = useAppContext()
+  const { collectOsc, lastOscSent, setLastOscSent } = useAppContext()
 
   const [isUnmapping, setIsUnmapping] = useState(false)
 
@@ -21,7 +21,7 @@ function BluhandScreen() {
     screen: screenDimensions,
   });
 
-  const oscSender = OscSender(lastOscSent, setLastOscSent)
+  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -38,7 +38,7 @@ function BluhandScreen() {
     // Now the button includes an `onPress` handler to update the count
     navigation.setOptions({
       headerLeft: () => (
-        <Button color="#990000" onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
+        <Button color={DEFAULT_COLOR} onPress={() => { setIsUnmapping(u => !u) }} title="Unmap" />
       ),
       headerRight: () => (
         <Button onPress={() => { oscSender.send("/btnRefresh") }} title="Refresh" />
@@ -48,7 +48,8 @@ function BluhandScreen() {
 
   const shortcuts = []
   for (let idx = 1; idx <= 8; idx++) {
-    const color = "#" + (oscData['/shortcut' + idx + 'Color'] || DEFAULT_COLOR).substring(0, 6)
+    const colorKey = '/shortcut' + idx + 'Color'
+    const color = (oscData[colorKey] ? "#" + oscData[colorKey] : DEFAULT_COLOR).substring(0, 7)
     const title = oscData['/shortcutName' + idx] || ("Shortcut " + idx)
     const style = { borderWidth: 1, flex: 1, backgroundColor: color + "44" } as StyleProp<ViewStyle>
     const address = (isUnmapping ? '/unmapshortcut' : '/mapshortcut') + idx

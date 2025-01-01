@@ -11,7 +11,7 @@ const screenDimensions = Dimensions.get('screen');
 
 export default function KnobblerScreen({ route }) {
   const navigation = useNavigation();
-  const { oscData, lastOscSent, setLastOscSent } = useAppContext()
+  const { collectOsc, oscData, lastOscSent, setLastOscSent } = useAppContext()
   const { page } = route.params
 
   const [isUnmapping, setIsUnmapping] = useState(false)
@@ -21,7 +21,7 @@ export default function KnobblerScreen({ route }) {
     screen: screenDimensions,
   });
 
-  const oscSender = OscSender(lastOscSent, setLastOscSent)
+  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(

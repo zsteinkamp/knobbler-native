@@ -1,23 +1,18 @@
 import React from "react";
-import { Button, Text, View } from "react-native";
+import { Button, Switch, Text, View } from "react-native";
 import { useAppContext } from "./AppContext";
 import OscList from "./components/OscList";
 import AutoDiscovery from "./components/AutoDiscovery";
-import { useNavigation } from "@react-navigation/native";
+import { DarkTheme, useNavigation } from "@react-navigation/native";
 import { OscSender } from "./OscHandler";
-import { TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
+import { ACCENT2_COLOR, TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
 
 export default function SetupScreen() {
-  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, serverPort } = useAppContext()
+  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, serverPort, collectOsc, setCollectOsc } = useAppContext()
   const navigation = useNavigation();
 
-  const oscSender = OscSender(lastOscSent, setLastOscSent)
+  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
 
-  /* TODO put in headers (knobbler and bluhand and setup why not if you are troubleshooting and want to receive. maybe add send ping to send?
-        <View style={{ flex: 1, flexGrow: 1 }}>
-          <Button title="Refresh UI" onPress={() => oscSender.send('/btnRefresh')} />
-        </View>
-  */
   React.useEffect(() => {
     // Use `setOptions` to update the button that we previously specified
     // Now the button includes an `onPress` handler to update the count
@@ -28,6 +23,14 @@ export default function SetupScreen() {
     });
   }, [navigation]);
 
+  const toggleSwitch = () => {
+    setCollectOsc(!collectOsc)
+  }
+  /*
+  trackColor={{ false: '#767577', true: '#81b0ff' }}
+  thumbColor={collectOsc ? '#f5dd4b' : '#f4f3f4'}
+  ios_backgroundColor="#3e3e3e"
+  */
 
   return (
     <View style={{ padding: 40, gap: 40, flexDirection: "row", flexGrow: 1 }}>
@@ -50,12 +53,26 @@ export default function SetupScreen() {
         </View>
       </View>
       <View style={{ flex: 1, flexGrow: 1 }}>
-        <View style={{ flex: 1, marginBottom: 20, borderWidth: 0, borderColor: "red" }}>
-          <OscList title="Last Osc Sent" data={lastOscSent} setData={setLastOscSent} />
+        <View style={{ flexDirection: "row", marginBottom: 40 }}>
+          <Switch
+            trackColor={{ true: DarkTheme.colors.primary, false: '#767577' }}
+            thumbColor={collectOsc ? '#f4f3f4' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={collectOsc}
+          />
+          <Text style={[TEXT_COMMON, { marginTop: 8, marginLeft: 16, flexGrow: 1 }]}>OSC Debug (has a performance impact)</Text>
         </View>
-        <View style={{ flex: 1, marginTop: 20 }}>
-          <OscList title="Last Osc Received" data={lastOscReceived} setData={setLastOscReceived} />
-        </View>
+        {collectOsc && (
+          <>
+            <View style={{ flex: 1, marginBottom: 20, borderWidth: 0, borderColor: "red" }}>
+              <OscList title="Last Osc Sent" data={lastOscSent} setData={setLastOscSent} />
+            </View>
+            <View style={{ flex: 1, marginTop: 20 }}>
+              <OscList title="Last Osc Received" data={lastOscReceived} setData={setLastOscReceived} />
+            </View>
+          </>
+        )}
       </View>
     </View>
   );

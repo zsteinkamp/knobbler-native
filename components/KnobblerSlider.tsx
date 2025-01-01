@@ -26,9 +26,9 @@ export default function KnobblerSlider({
   trackColor,
   value,
 }) {
-  const { oscDataRef, setOscData, sliderRefsRef, lastOscSent, setLastOscSent } = useAppContext()
+  const { collectOsc, oscDataRef, setOscData, sliderRefsRef, lastOscSent, setLastOscSent } = useAppContext()
 
-  const oscSender = OscSender(lastOscSent, setLastOscSent)
+  const oscSender = OscSender(collectOsc, lastOscSent, setLastOscSent)
 
   function sendSliderValue(address: string, val: number) {
     oscDataRef.current[address] = val
