@@ -1,14 +1,14 @@
 import React from "react";
-import { Button, Switch, Text, View } from "react-native";
+import { Button, Switch, Text, TextInput, View } from "react-native";
 import { useAppContext } from "./AppContext";
 import OscList from "./components/OscList";
 import AutoDiscovery from "./components/AutoDiscovery";
 import { DarkTheme, useNavigation } from "@react-navigation/native";
 import { OscSend } from "./OscHandler";
-import { TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
+import { DEFAULT_COLOR, TEXT_COMMON, TEXT_HEADER } from "./lib/constants";
 
 export default function SetupScreen() {
-  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, serverPort, collectOsc, setCollectOsc, lastOscSentRef } = useAppContext()
+  const { lastOscReceived, lastOscSent, setLastOscReceived, setLastOscSent, serverHost, setServerHost, serverPort, setServerPort, collectOsc, setCollectOsc, lastOscSentRef } = useAppContext()
   const navigation = useNavigation();
 
   React.useEffect(() => {
@@ -25,6 +25,20 @@ export default function SetupScreen() {
     setCollectOsc(!collectOsc)
   }
 
+  const onChangeHost = (val: string) => setServerHost(val)
+  const onChangePort = (val: string) => setServerPort(parseInt(val))
+  const clearConnection = () => {
+    setServerHost(null)
+    setServerPort(null)
+  }
+
+  const INPUT_COMMON = {
+    borderWidth: 1,
+    borderColor: DarkTheme.colors.border,
+    padding: 10,
+    borderRadius: 10,
+  }
+
   return (
     <View style={{ padding: 40, gap: 40, flexDirection: "row", flexGrow: 1 }}>
       <View style={{ flex: 1, borderWidth: 0, borderColor: "white" }}>
@@ -32,14 +46,28 @@ export default function SetupScreen() {
           <Text style={[TEXT_HEADER, { marginBottom: 20 }]}>
             Knobbler Max Device Connection
           </Text>
-          <View>
-            <View style={{ flexDirection: "row", marginBottom: 10 }}>
-              <Text style={[TEXT_COMMON, { flex: 1 }]}>Hostname:</Text>
-              <Text style={[TEXT_COMMON, { flex: 4, fontWeight: "bold" }]}>{serverHost}</Text>
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ flex: 2 }}>
+              <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                <Text style={[TEXT_COMMON, { paddingVertical: 10, flex: 1 }]}>Hostname:</Text>
+                <TextInput
+                  style={[TEXT_COMMON, INPUT_COMMON, { flex: 4 }]}
+                  onChangeText={onChangeHost}
+                  value={serverHost}
+                />
+              </View>
+              <View style={{ flexDirection: "row", marginBottom: 40 }}>
+                <Text style={[TEXT_COMMON, { paddingVertical: 10, flex: 1 }]}>Port:</Text>
+                <TextInput
+                  style={[TEXT_COMMON, INPUT_COMMON, { flex: 4 }]}
+                  onChangeText={onChangePort}
+                  value={serverPort?.toString()}
+                  keyboardType="numeric"
+                />
+              </View>
             </View>
-            <View style={{ flexDirection: "row", marginBottom: 40 }}>
-              <Text style={[TEXT_COMMON, { flex: 1 }]}>Port:</Text>
-              <Text style={[TEXT_COMMON, { flex: 4, fontWeight: "bold" }]}>{serverPort}</Text>
+            <View style={{ flex: 1 }}>
+              <Button color={DEFAULT_COLOR} title="Clear" onPress={clearConnection} />
             </View>
           </View>
           <AutoDiscovery />
