@@ -24,7 +24,7 @@ const titleOptions = (key) => {
   return {
     title: meta.title,
     headerTitle: meta.emoji + " " + meta.title,
-    tabBarIcon: () => { return <Text>{meta.emoji}</Text> },
+    tabBarIcon: () => { return <Text style={{ fontSize: 24, opacity: 0.75 }}>{meta.emoji}</Text> },
   }
 }
 

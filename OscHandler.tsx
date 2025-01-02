@@ -30,7 +30,7 @@ function OscHandler({ children }) {
 
   // variables to debounce the render timestamp flag
   let renderTimer = null
-  const updateFreq = 10
+  const updateFreq = 2
 
   const handleMessage = (oscMessage: OscMessage) => {
     const address = oscMessage.address
@@ -46,9 +46,7 @@ function OscHandler({ children }) {
     // straight to the ref instead of setOscData() from useState
     // thx https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
     oscDataRef.current[address] = value
-    // not using state for this -- just jam it in the ref and then
-    //setOscData({ ...oscDataRef.current })
-
+    // then directly tell the slider to go to a value, instead of waiting for a render
     if (sliderRefsRef.current[address]) {
       sliderRefsRef.current[address].current?.setValueQuietly(value)
     }

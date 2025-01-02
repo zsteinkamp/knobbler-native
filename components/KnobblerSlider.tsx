@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { OscSend } from "../OscHandler";
 import { DimensionValue, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import VerticalSlider from "./VerticalSlider"
@@ -42,26 +42,29 @@ export default function KnobblerSlider({
   const sliderRef = useRef(null)
 
   // define the slider so we can get a ref
-  const slider = (
-    <>
-      <VerticalSlider
-        ref={sliderRef}
-        width={"100%" as DimensionValue}
-        height={sliderHeight}
-        value={value}
-        min={0}
-        max={1}
-        step={0.002} // 500 steps
-        minimumTrackTintColor={trackColor}
-        maximumTrackTintColor={trackColor + "11"}
-        onChange={(val) => sendSliderValue(valAddress, val)}
-        onTapNumTaps={isUnmapping ? 1 : 2}
-        onTap={isUnmapping ? () => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/unmap" + idx) : () => OscSend(collectOsc, lastOscSentRef, setLastOscSent, defaultAddress, [])}
-        useSpring={false}
-        containerStyle={{ borderWidth: 1, borderColor: isUnmapping && "red" }}
-      />
-    </>
-  )
+  const slider = useMemo(() => {
+    //console.log('RENDER VERTICALS', valAddress)
+    return (
+      //const slider = (
+      <>
+        <VerticalSlider
+          ref={sliderRef}
+          width={"100%" as DimensionValue}
+          height={sliderHeight}
+          min={0}
+          max={1}
+          step={0.002} // 500 steps
+          minimumTrackTintColor={trackColor}
+          maximumTrackTintColor={trackColor + "11"}
+          onChange={(val) => sendSliderValue(valAddress, val)}
+          onTapNumTaps={isUnmapping ? 1 : 2}
+          onTap={isUnmapping ? () => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/unmap" + idx) : () => OscSend(collectOsc, lastOscSentRef, setLastOscSent, defaultAddress, [])}
+          useSpring={false}
+          containerStyle={{ borderWidth: 1, borderColor: isUnmapping && "red" }}
+        />
+      </>
+    )
+  }, [isUnmapping, trackColor, sliderHeight, sliderRef])
 
   sliderRefsRef.current[valAddress] = sliderRef
 
@@ -72,9 +75,8 @@ export default function KnobblerSlider({
     } as StyleProp<TextStyle>]
   const sliderTextStyle = [
     TEXT_COMMON, {
-      width: "100%",
       textAlign: "left",
-      marginHorizontal: 10,
+      marginLeft: 5,
     } as StyleProp<TextStyle>]
 
   const viewStyle = {
@@ -84,31 +86,40 @@ export default function KnobblerSlider({
     borderRadius: 10,
   } as StyleProp<ViewStyle>
 
-  return (
-    <View
-      style={viewStyle}
-    >
-      <Text numberOfLines={1} style={sliderValStrStyle}>
-        {oscDataRef.current[valStrAddress] || EMPTY_STRING}
-      </Text>
-      <View style={{ width: "100%", paddingVertical: 10, marginHorizontal: "auto" }}>
-        {slider}
-      </View>
-      <View style={{ width: "100%" }}>
-        <Text numberOfLines={1} style={[sliderTextStyle, { fontWeight: "bold" }]}>
-          {oscDataRef.current[paramAddress] || EMPTY_STRING}
+  return useMemo(() => {
+    //console.log('RENDER SLIDER ' + valStrAddress)
+    return (
+      <View
+        style={viewStyle}
+      >
+        <Text numberOfLines={1} style={sliderValStrStyle}>
+          {oscDataRef.current[valStrAddress] || EMPTY_STRING}
         </Text>
-        {!isBlu && (
-          <>
-            <Text numberOfLines={1} style={sliderTextStyle}>
-              {oscDataRef.current[deviceAddress] || EMPTY_STRING}
-            </Text>
-            <Text onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, '/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
-              {oscDataRef.current[trackAddress] || EMPTY_STRING}
-            </Text>
-          </>
-        )}
+        <View style={{ width: "100%", paddingVertical: 10, marginHorizontal: "auto" }}>
+          {slider}
+        </View>
+        <View style={{ width: "100%" }}>
+          <Text numberOfLines={1} style={[sliderTextStyle, { fontWeight: "bold" }]}>
+            {oscDataRef.current[paramAddress] || EMPTY_STRING}
+          </Text>
+          {!isBlu && (
+            <>
+              <Text numberOfLines={1} style={sliderTextStyle}>
+                {oscDataRef.current[deviceAddress] || EMPTY_STRING}
+              </Text>
+              <Text onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, '/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
+                {oscDataRef.current[trackAddress] || EMPTY_STRING}
+              </Text>
+            </>
+          )}
+        </View>
       </View>
-    </View>
-  )
+    )
+  }, [
+    oscDataRef.current[valStrAddress],
+    oscDataRef.current[paramAddress],
+    oscDataRef.current[deviceAddress],
+    oscDataRef.current[trackAddress],
+    trackColor, sliderHeight, sliderRef, isUnmapping,
+  ])
 }

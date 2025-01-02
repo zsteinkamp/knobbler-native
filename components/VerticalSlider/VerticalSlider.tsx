@@ -86,7 +86,7 @@ const VerticalSlider = React.forwardRef<TSliderRef, TSliderProps>(
     ) => {
       if (disabledProp.value) return;
       setStartEventY(event.y)
-      setStartValue(currentValue)
+      setStartValue(point.value)
     }
     const onGestureChange = (
       event: GestureUpdateEvent<
