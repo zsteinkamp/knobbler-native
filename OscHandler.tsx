@@ -42,6 +42,7 @@ function OscHandler({ children }) {
     // straight to the ref instead of setOscData() from useState
     // thx https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
     oscDataRef.current[address] = value
+    setOscData({ ...oscDataRef.current })
 
     if (sliderRefsRef.current[address]) {
       sliderRefsRef.current[address].current?.setValueQuietly(value)
@@ -52,8 +53,6 @@ function OscHandler({ children }) {
       lastOscReceivedRef.current.unshift([address, value].join(" "))
       setLastOscReceived(lastOscReceivedRef.current.slice(0, RETAIN_OSC_MSG_COUNT))
     }
-
-    setOscData({ ...oscDataRef.current })
   }
 
   useEffect(() => {

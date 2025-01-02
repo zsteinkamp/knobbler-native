@@ -92,7 +92,7 @@ function BluhandScreen() {
         borderWidth: 0,
         borderColor: 'yellow',
         flexDirection: "row",
-        marginHorizontal: 30,
+        marginHorizontal: 10,
         marginTop: 20,
         marginBottom: 10
       }}>
