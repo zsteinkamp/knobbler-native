@@ -11,7 +11,7 @@ const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 function BluhandScreen() {
-  const { oscData } = useAppContext()
+  const { oscDataRef } = useAppContext()
   const navigation = useNavigation();
   const { serverHost, serverPort, collectOsc, lastOscSentRef, setLastOscSent } = useAppContext()
 
@@ -22,6 +22,7 @@ function BluhandScreen() {
     screen: screenDimensions,
   });
 
+  // track changing window dimensions (rotate, split, etc)
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
       'change',
@@ -51,8 +52,10 @@ function BluhandScreen() {
   const shortcuts = []
   for (let idx = 1; idx <= 8; idx++) {
     const colorKey = '/shortcut' + idx + 'Color'
-    const color = (oscData[colorKey] ? "#" + oscData[colorKey] : DEFAULT_COLOR).substring(0, 7)
-    const title = oscData['/shortcutName' + idx] || ("Shortcut " + idx)
+    const color = (oscDataRef.current[colorKey] ?
+      "#" + oscDataRef.current[colorKey]
+      : DEFAULT_COLOR).substring(0, 7)
+    const title = oscDataRef.current['/shortcutName' + idx] || ("Shortcut " + idx)
     const style = { borderRadius: 10, overflow: "hidden", borderWidth: 1, flex: 1, backgroundColor: color + "44" } as StyleProp<ViewStyle>
     const address = (isUnmapping ? '/unmapshortcut' : '/mapshortcut') + idx
     shortcuts.push(
@@ -102,7 +105,7 @@ function BluhandScreen() {
           fontWeight: "bold",
           marginTop: 4
         }]}>
-          {oscData["/bcurrDeviceName"]}
+          {oscDataRef.current["/bcurrDeviceName"]}
         </Text>
         <Button title="← Prev Bank" onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/bbankPrev")} />
         <Text style={[TEXT_COMMON, {
@@ -110,11 +113,11 @@ function BluhandScreen() {
           fontSize: 19,
           paddingHorizontal: 20
         }]}>
-          {oscData["/bTxtCurrBank"]}
+          {oscDataRef.current["/bTxtCurrBank"]}
         </Text>
         <Button title="Next Bank →" onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, "/bbankNext")} />
       </View>
-      <SliderRows oscData={oscData} isBlu={true} screenH={dimensions.window.height} />
+      <SliderRows isBlu={true} screenH={dimensions.window.height} />
       <SetupModal />
     </View>
   );

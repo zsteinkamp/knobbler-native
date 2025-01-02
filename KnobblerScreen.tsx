@@ -1,19 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAppContext } from "./AppContext";
-import { DarkTheme, useNavigation } from "@react-navigation/native";
-import { Button, Dimensions, Text, View } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { Button, Dimensions, View } from 'react-native';
 import SliderRows from "./components/SliderRows";
 import { OscSend } from "./OscHandler";
-import { TEXT_COMMON } from "./lib/constants";
 import SetupModal from "./components/SetupModal";
-// https://www.npmjs.com/package/@react-native-community/slider
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
 
 export default function KnobblerScreen({ route }) {
   const navigation = useNavigation();
-  const { serverHost, serverPort, collectOsc, oscData, lastOscSentRef, setLastOscSent } = useAppContext()
+  const { serverHost, serverPort, collectOsc, lastOscSentRef, setLastOscSent } = useAppContext()
   const { page } = route.params
 
   const [isUnmapping, setIsUnmapping] = useState(false)
@@ -23,6 +21,7 @@ export default function KnobblerScreen({ route }) {
     screen: screenDimensions,
   });
 
+  // track changing dimensions (rotating, split screen, etc)
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
       'change',
@@ -32,7 +31,6 @@ export default function KnobblerScreen({ route }) {
     );
     return () => subscription?.remove();
   });
-
   const ref = useRef(null);
 
   React.useEffect(() => {
@@ -53,7 +51,7 @@ export default function KnobblerScreen({ route }) {
 
   return (
     <View ref={ref} style={{ marginTop: 15, marginHorizontal: 10 }}>
-      <SliderRows oscData={oscData} isBlu={false} page={page} isUnmapping={isUnmapping} screenH={dimensions.window.height} />
+      <SliderRows isBlu={false} page={page} isUnmapping={isUnmapping} screenH={dimensions.window.height} />
       <SetupModal />
     </View>
   )

@@ -1,15 +1,16 @@
 import React from "react"
 import KnobblerSlider from "./KnobblerSlider"
 import { DEFAULT_COLOR } from "../lib/constants"
+import { useAppContext } from "../AppContext"
 
 export default function SliderRow({
-  oscData,
   isBlu = false,
   page = 1,
   isUnmapping = false,
   row,
   screenH
 }) {
+  const { oscDataRef } = useAppContext()
   const rows = 2
 
   const cols = 8
@@ -25,18 +26,17 @@ export default function SliderRow({
 
     const valAddress = (isBlu ? "/bval" : "/val") + idx
     const colorAddress = valAddress + "color"
-    const trackColor = (oscData[colorAddress] ? "#" + oscData[colorAddress] : DEFAULT_COLOR).substring(0, 7)
+    const trackColor = (oscDataRef.current[colorAddress] ? "#" + oscDataRef.current[colorAddress] : DEFAULT_COLOR).substring(0, 7)
     //console.log('TRACKCOLOR', trackColor)
 
     sliders.push(
       <KnobblerSlider
         isBlu={isBlu}
         isUnmapping={isUnmapping}
-        value={oscData[valAddress]}
+        value={oscDataRef.current[valAddress]}
         key={idx}
         idx={idx}
         sliderHeight={sliderHeight}
-        oscData={oscData}
         trackColor={trackColor}
       />
     )

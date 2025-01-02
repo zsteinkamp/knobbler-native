@@ -25,8 +25,12 @@ export function OscSend(collectOsc, lastOscSentRef, setLastOscSent, address: str
 const eventEmitter = new NativeEventEmitter(osc);
 
 function OscHandler({ children }) {
-  const { setOscData, oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived, serverHost, serverPort, listenPort, collectOsc } = useAppContext()
+  const { oscDataRef, sliderRefsRef, lastOscReceivedRef, setLastOscReceived, serverHost, serverPort, listenPort, collectOsc, setRenderTimestamp } = useAppContext()
   const [listener, setListener] = useState(null)
+
+  // variables to debounce the render timestamp flag
+  let renderTimer = null
+  const updateFreq = 10
 
   const handleMessage = (oscMessage: OscMessage) => {
     const address = oscMessage.address
@@ -42,7 +46,8 @@ function OscHandler({ children }) {
     // straight to the ref instead of setOscData() from useState
     // thx https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
     oscDataRef.current[address] = value
-    setOscData({ ...oscDataRef.current })
+    // not using state for this -- just jam it in the ref and then
+    //setOscData({ ...oscDataRef.current })
 
     if (sliderRefsRef.current[address]) {
       sliderRefsRef.current[address].current?.setValueQuietly(value)
@@ -53,6 +58,16 @@ function OscHandler({ children }) {
       lastOscReceivedRef.current.unshift([address, value].join(" "))
       setLastOscReceived(lastOscReceivedRef.current.slice(0, RETAIN_OSC_MSG_COUNT))
     }
+
+    // debounce to update the UI, decoupled from each message received Waits for
+    // a 1ms lull before recomputing the ui. Seems to make a huge difference.
+    if (renderTimer) {
+      clearTimeout(renderTimer)
+    }
+    renderTimer = setTimeout(
+      () => setRenderTimestamp((new Date()).getTime()),
+      updateFreq
+    )
   }
 
   useEffect(() => {

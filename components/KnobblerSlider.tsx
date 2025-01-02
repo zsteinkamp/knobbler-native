@@ -21,16 +21,14 @@ export default function KnobblerSlider({
   isBlu,
   isUnmapping,
   idx,
-  oscData,
   sliderHeight,
   trackColor,
   value,
 }) {
-  const { collectOsc, oscDataRef, setOscData, sliderRefsRef, lastOscSentRef, setLastOscSent } = useAppContext()
+  const { collectOsc, oscDataRef, sliderRefsRef, lastOscSentRef, setLastOscSent } = useAppContext()
 
   function sendSliderValue(address: string, val: number) {
     oscDataRef.current[address] = val
-    setOscData({ ...oscDataRef.current })
     OscSend(collectOsc, lastOscSentRef, setLastOscSent, address, [val])
   }
 
@@ -91,22 +89,22 @@ export default function KnobblerSlider({
       style={viewStyle}
     >
       <Text numberOfLines={1} style={sliderValStrStyle}>
-        {oscData[valStrAddress] || EMPTY_STRING}
+        {oscDataRef.current[valStrAddress] || EMPTY_STRING}
       </Text>
       <View style={{ width: "100%", paddingVertical: 10, marginHorizontal: "auto" }}>
         {slider}
       </View>
       <View style={{ width: "100%" }}>
         <Text numberOfLines={1} style={[sliderTextStyle, { fontWeight: "bold" }]}>
-          {oscData[paramAddress] || EMPTY_STRING}
+          {oscDataRef.current[paramAddress] || EMPTY_STRING}
         </Text>
         {!isBlu && (
           <>
             <Text numberOfLines={1} style={sliderTextStyle}>
-              {oscData[deviceAddress] || EMPTY_STRING}
+              {oscDataRef.current[deviceAddress] || EMPTY_STRING}
             </Text>
             <Text onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, '/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
-              {oscData[trackAddress] || EMPTY_STRING}
+              {oscDataRef.current[trackAddress] || EMPTY_STRING}
             </Text>
           </>
         )}

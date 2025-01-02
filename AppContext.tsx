@@ -11,6 +11,7 @@ function AppContextProvider({ children }) {
   const [lastOscSent, setLastOscSent] = useState([])
   const [collectOsc, setCollectOsc] = useState(false)
   const [listenPort, setListenPort] = useState(2347)
+  const [renderTimestamp, setRenderTimestamp] = useState(0)
 
   const sliderRefsRef = useRef(sliderRefs)
   const oscDataRef = useRef(oscData)
@@ -63,7 +64,7 @@ function AppContextProvider({ children }) {
 
   return (
     <AppContext.Provider value={{
-      oscData, setOscData, oscDataRef,
+      oscDataRef,
       sliderRefs, setSliderRefs, sliderRefsRef,
       lastOscReceived, setLastOscReceived, lastOscReceivedRef,
       lastOscSent, setLastOscSent, lastOscSentRef,
@@ -72,6 +73,7 @@ function AppContextProvider({ children }) {
       collectOsc, setCollectOsc,
       listenPort, setListenPort,
       dataFetch, dataStore,
+      renderTimestamp, setRenderTimestamp,
     }}>
       {children}
     </AppContext.Provider>
