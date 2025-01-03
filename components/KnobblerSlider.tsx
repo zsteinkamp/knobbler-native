@@ -88,18 +88,23 @@ export default function KnobblerSlider({
 
   return useMemo(() => {
     //console.log('RENDER SLIDER ' + valStrAddress)
+    let valStr = oscDataRef?.current[valStrAddress]?.toString()
+    if (valStr && valStr.length > 10 && valStr.match(/^[0-9-.]+$/)) {
+      // special case long ass float
+      valStr = oscDataRef.current[valStrAddress].toFixed(3)
+    }
     return (
       <View
         style={viewStyle}
       >
         <Text numberOfLines={1} style={sliderValStrStyle}>
-          {oscDataRef.current[valStrAddress] || EMPTY_STRING}
+          {valStr || EMPTY_STRING}
         </Text>
         <View style={{ width: "100%", paddingVertical: 10, marginHorizontal: "auto" }}>
           {slider}
         </View>
         <View style={{ width: "100%" }}>
-          <Text numberOfLines={1} style={[sliderTextStyle, { fontWeight: "bold" }]}>
+          <Text numberOfLines={1} style={[sliderTextStyle, isBlu ? {} : { fontWeight: "bold" }]}>
             {oscDataRef.current[paramAddress] || EMPTY_STRING}
           </Text>
           {!isBlu && (
@@ -107,7 +112,7 @@ export default function KnobblerSlider({
               <Text numberOfLines={1} style={sliderTextStyle}>
                 {oscDataRef.current[deviceAddress] || EMPTY_STRING}
               </Text>
-              <Text onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, '/track' + idx + 'touch')} numberOfLines={1} style={sliderTextStyle}>
+              <Text onPress={() => OscSend(collectOsc, lastOscSentRef, setLastOscSent, '/track' + idx + 'touch')} numberOfLines={1} style={[sliderTextStyle, { opacity: 0.66 }]}>
                 {oscDataRef.current[trackAddress] || EMPTY_STRING}
               </Text>
             </>
