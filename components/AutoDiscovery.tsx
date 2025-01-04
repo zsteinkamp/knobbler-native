@@ -43,7 +43,7 @@ export default function AutoDiscovery() {
 
     NetworkInfo.getIPV4Address().then((ip) => {
       //console.log('IP ' + ip)
-      zeroconf.publishService('osc', 'udp', 'local.', "Knobbler UI (" + ip + ")", 2347)
+      zeroconf.publishService('osc', 'udp', 'local.', "Knobbler App (" + ip + ")", 2347)
     })
     zeroconf.on('start', () => {
       setIsScanning(true)
@@ -54,7 +54,7 @@ export default function AutoDiscovery() {
       //console.log('[Stop]')
     })
     zeroconf.on('resolved', service => {
-      if (!service.name.match(/Knobbler/) || service.name.match(/Knobbler UI/)) {
+      if (!service.name.match(/Knobbler/) || service.name.match(/Knobbler App/)) {
         return
       }
       //console.log('[Resolve]', makeServiceKey(service), JSON.stringify(service, null, 2))

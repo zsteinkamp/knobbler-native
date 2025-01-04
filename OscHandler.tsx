@@ -72,19 +72,20 @@ function OscHandler({ children }) {
     if (!serverHost || !serverPort) {
       if (listener) {
         // zero out the connection
+        console.log('ZERO')
         listener.remove();
         setListener(null);
       }
       return
     }
     // subscribe
-    //console.log('SUBSCRIBE', { serverHost, serverPort, collectOsc })
+    console.log('SUBSCRIBE', { serverHost, serverPort, collectOsc })
     osc.createClient(serverHost, serverPort);
     osc.createServer(listenPort);
     setListener(eventEmitter.addListener('GotMessage', handleMessage))
     return () => {
       // unsubscribe
-      //console.log('UN-SUBSCRIBE', { listener, serverHost, serverPort })
+      console.log('UN-SUBSCRIBE', { listener, serverHost, serverPort })
       listener && listener.remove();
       setListener(null);
     }

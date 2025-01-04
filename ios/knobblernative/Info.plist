@@ -7,7 +7,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>knobbler-native</string>
+    <string>Knobbler</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -33,7 +33,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>exp+knobbler-native</string>
+          <string>exp+knobbler</string>
         </array>
       </dict>
     </array>
@@ -50,6 +50,12 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_osc._udp.</string>
+    </array>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Facilitates auto-discovery of Knobbler running in Ableton Live.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
@@ -73,14 +79,8 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UIUserInterfaceStyle</key>
-    <string>Automatic</string>
+    <string>Dark</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
-    <key>NSBonjourServices</key>
-    <array>
-      <string>_osc._udp.</string>
-    </array>
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>Facilitates auto-discovery of Knobbler running in Ableton Live.</string>
   </dict>
 </plist>

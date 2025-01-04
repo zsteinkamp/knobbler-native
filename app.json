@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "knobbler-native",
-    "slug": "knobbler-native",
+    "name": "Knobbler",
+    "slug": "Knobbler",
     "version": "1.0.0",
     "orientation": "landscape",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true,
@@ -19,12 +19,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "package": "com.anonymous.knobblernative"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }
