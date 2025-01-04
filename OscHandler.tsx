@@ -72,7 +72,7 @@ function OscHandler({ children }) {
     if (!serverHost || !serverPort) {
       if (listener) {
         // zero out the connection
-        console.log('ZERO')
+        //console.log('ZERO')
         listener.remove();
         setListener(null);
       }

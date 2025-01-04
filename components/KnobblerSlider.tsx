@@ -51,6 +51,7 @@ export default function KnobblerSlider({
           ref={sliderRef}
           width={"100%" as DimensionValue}
           height={sliderHeight}
+          value={oscDataRef?.current[valAddress]}
           min={0}
           max={1}
           step={0.002} // 500 steps
